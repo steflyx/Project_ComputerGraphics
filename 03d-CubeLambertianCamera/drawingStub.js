@@ -1,3 +1,11 @@
+//Parameters for Camera
+var elevation = 0.0;
+var angle = 0.0;
+var lookRadius = 10.0;
+var cameraXAngleRadians = utils.degToRad(90);
+var cameraYAngleRadians = utils.degToRad(0);
+
+
 var vs = `#version 300 es
 
 in vec3 inPosition;
@@ -30,6 +38,42 @@ void main() {
   vec3 lambertColor = mDiffColor * lightColor * dot(-lDir,nNormal);
   outColor = vec4(clamp(lambertColor, 0.0, 1.0), 1.0);
 }`;
+
+// event handler
+var mouseState = false;
+var lastMouseX = -100, lastMouseY = -100;
+function doMouseDown(event) {
+	lastMouseX = event.pageX;
+	lastMouseY = event.pageY;
+	mouseState = true;
+}
+function doMouseUp(event) {
+	lastMouseX = -100;
+	lastMouseY = -100;
+	mouseState = false;
+}
+function doMouseMove(event) {
+	if(mouseState) {
+		console.log("doMouseMove");
+		var dx = event.pageX - lastMouseX;
+		var dy = lastMouseY - event.pageY;
+		lastMouseX = event.pageX;
+		lastMouseY = event.pageY;
+		
+		if((dx != 0) || (dy != 0)) {
+			angle = angle + 0.5 * dx;
+			elevation = elevation + 0.5 * dy;
+			cameraXAngleRadians = elevation;
+			cameraYAngleRadians= angle;
+		}
+	}
+}
+function doMouseWheel(event) {
+	var nLookRadius = lookRadius + event.wheelDelta/200.0;
+	if((nLookRadius > 2.0) && (nLookRadius < 100.0)) {
+		lookRadius = nLookRadius;
+	}
+}
 
 function main() {
   
@@ -75,6 +119,11 @@ function main() {
     document.write("GL context not opened");
     return;
   }
+	canvas.addEventListener("mousedown", doMouseDown, false);
+	canvas.addEventListener("mouseup", doMouseUp, false);
+	canvas.addEventListener("mousemove", doMouseMove, false);
+	canvas.addEventListener("mousewheel", doMouseWheel, false);
+	
   utils.resizeCanvasToDisplaySize(gl.canvas);
   gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
   gl.clearColor(0.85, 0.85, 0.85, 1.0);
@@ -146,11 +195,20 @@ function main() {
     gl.clearColor(0.85, 0.85, 0.85, 1.0);
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
       
-    var viewMatrix = utils.MakeView(2.0, 2.0, 3.0, -40.0, -45.0);
+    //var viewMatrix = utils.MakeView(2.0, 2.0, 3.0, -40.0, -45.0);
+	
+	// update WV matrix
+   // Compute a matrix for the camera
+	var rotationX = utils.MakeRotateXMatrix(cameraXAngleRadians);
+	var rotationY = utils.MakeRotateYMatrix(cameraYAngleRadians);
+	var cameraMatrix= utils.multiplyMatrices(rotationX,rotationY);
+	cameraMatrix = utils.multiplyMatrices(cameraMatrix,utils.MakeTranslateMatrix(0, 0, lookRadius));
+	viewMatrix = utils.invertMatrix(cameraMatrix);
+	
     var lightDirMatrix = utils.invertMatrix(utils.transposeMatrix(viewMatrix));//viewMatrix;
     var lightDirectionTransformed = utils.multiplyMatrix3Vector3(utils.sub3x3from4x4(lightDirMatrix),directionalLight);
     
-      for(i = 0; i < 4; i++){
+      for(i = 0; i < 5; i++){
       var worldViewMatrix = utils.multiplyMatrices(viewMatrix, cubeWorldMatrix[i]);
       var projectionMatrix = utils.multiplyMatrices(perspectiveMatrix, worldViewMatrix);
 
