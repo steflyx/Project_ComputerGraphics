@@ -1,8 +1,8 @@
 //3D cube vertex coordinates and indices
 
 var square_size=5.0;
-var width=0.5;
-var space_between_pieces=0.5;
+var width=1;
+var space_between_pieces=1;
 
 var vertices = [
 	//big triangle 1
@@ -11,15 +11,15 @@ var vertices = [
 	width/2,     square_size,    0.0,               //2
 	-width/2,    0.0,            0.0,               //3
 	-width/2,    square_size/2,  square_size/2,     //4
-	-width/2,    square_size,    0.0,                //5	
+	-width/2,    square_size,    0.0,               //5	
 	
 	//big triangle 2
-	width/2,     square_size+space_between_pieces,            0.0+space_between_pieces/2,               //0
+	width/2,     square_size+space_between_pieces,            0.0+space_between_pieces/2,                //0
 	width/2,     square_size/2+space_between_pieces,          square_size/2 +space_between_pieces/2,     //1
 	width/2,     square_size+space_between_pieces,            square_size +space_between_pieces/2,       //2
 	-width/2,    square_size+space_between_pieces,            0.0 +space_between_pieces/2,               //3
 	-width/2,    square_size/2+space_between_pieces,          square_size/2 +space_between_pieces/2,     //4
-	-width/2,    square_size+space_between_pieces   ,         square_size +space_between_pieces/2,        //5
+	-width/2,    square_size+space_between_pieces   ,         square_size +space_between_pieces/2,       //5
 	
 	//small triangle 1
 	width/2,     -space_between_pieces,                      0.0,               //0
@@ -30,41 +30,41 @@ var vertices = [
 	-width/2,     square_size/4-space_between_pieces,         square_size/4,    //5
 	
 	//medium triangle 1
-	width/2,     -space_between_pieces,                      square_size/2+space_between_pieces,   //0
-	width/2,     -space_between_pieces,                      square_size+space_between_pieces,     //1
-	width/2,     square_size/2-space_between_pieces,         square_size+space_between_pieces,     //2
-	-width/2,     -space_between_pieces,                      square_size/2+space_between_pieces,   //3
-	-width/2,     -space_between_pieces,                      square_size+space_between_pieces,     //4
-	-width/2,     square_size/2-space_between_pieces,         square_size+space_between_pieces,     //5
+	width/2,     -space_between_pieces,                      square_size/2+space_between_pieces,  //0
+	width/2,     -space_between_pieces,                      square_size+space_between_pieces,    //1
+	width/2,     square_size/2-space_between_pieces,         square_size+space_between_pieces,    //2
+	-width/2,     -space_between_pieces,                      square_size/2+space_between_pieces, //3
+	-width/2,     -space_between_pieces,                      square_size+space_between_pieces,   //4
+	-width/2,     square_size/2-space_between_pieces,         square_size+space_between_pieces,   //5
 	
 	//small triangle 2
 	width/2,     square_size/2,                     square_size/2+space_between_pieces/2,       //0
 	width/2,     square_size/4,                     3*square_size/4+space_between_pieces/2,     //1
-	width/2,     3*square_size/4,                    3*square_size/4+space_between_pieces/2,     //2
-	-width/2,     square_size/2,                     square_size/2+space_between_pieces/2,       //0
-	-width/2,     square_size/4,                     3*square_size/4+space_between_pieces/2,     //1
-	-width/2,     3*square_size/4,                    3*square_size/4+space_between_pieces/2,     //2
+	width/2,     3*square_size/4,                    3*square_size/4+space_between_pieces/2,    //2
+	-width/2,     square_size/2,                     square_size/2+space_between_pieces/2,      //0
+	-width/2,     square_size/4,                     3*square_size/4+space_between_pieces/2,    //1
+	-width/2,     3*square_size/4,                    3*square_size/4+space_between_pieces/2,   //2
 	
 	//Square
-	width/2,     0-space_between_pieces/2,                     square_size/2+space_between_pieces/2,   //0
+	width/2,     0-space_between_pieces/2,                     square_size/2+space_between_pieces/2,       //0
 	width/2,     square_size/4-space_between_pieces/2,         3*square_size/4+space_between_pieces/2,     //1
-	width/2,     square_size/2-space_between_pieces/2,         square_size/2+space_between_pieces/2,     //2
-	width/2,     square_size/4-space_between_pieces/2,         square_size/4+space_between_pieces/2,     //3
-	-width/2,     0-space_between_pieces/2,                     square_size/2+space_between_pieces/2,   //4
+	width/2,     square_size/2-space_between_pieces/2,         square_size/2+space_between_pieces/2,       //2
+	width/2,     square_size/4-space_between_pieces/2,         square_size/4+space_between_pieces/2,       //3
+	-width/2,     0-space_between_pieces/2,                     square_size/2+space_between_pieces/2,      //4
 	-width/2,     square_size/4-space_between_pieces/2,         3*square_size/4+space_between_pieces/2,    //5
-	-width/2,     square_size/2-space_between_pieces/2,         square_size/2+space_between_pieces/2,     //6
-	-width/2,     square_size/4-space_between_pieces/2,         square_size/4+space_between_pieces/2, //7
+	-width/2,     square_size/2-space_between_pieces/2,         square_size/2+space_between_pieces/2,      //6
+	-width/2,     square_size/4-space_between_pieces/2,         square_size/4+space_between_pieces/2,      //7
 	
 	//parallelepiped
-	width/2,      square_size/4,    3*square_size/4 +space_between_pieces,   //0
-	width/2,      square_size/2,    square_size +space_between_pieces,     //1
-	width/2,	  square_size,      square_size +space_between_pieces,     //2
-	width/2,      3*square_size/4,  3*square_size/4+space_between_pieces,     //3
+	width/2,      square_size/4,    3*square_size/4 +space_between_pieces,     //0
+	width/2,      square_size/2,    square_size +space_between_pieces,         //1
+	width/2,	  square_size,      square_size +space_between_pieces,         //2
+	width/2,      3*square_size/4,  3*square_size/4+space_between_pieces,      //3
 	
-	-width/2,      square_size/4,    3*square_size/4 +space_between_pieces,   //0
-	-width/2,      square_size/2,    square_size +space_between_pieces,     //1
-	-width/2,	   square_size,      square_size +space_between_pieces,     //2
-	-width/2,      3*square_size/4,  3*square_size/4+space_between_pieces     //3
+	-width/2,      square_size/4,    3*square_size/4 +space_between_pieces,    //0
+	-width/2,      square_size/2,    square_size +space_between_pieces,        //1
+	-width/2,	   square_size,      square_size +space_between_pieces,        //2
+	-width/2,      3*square_size/4,  3*square_size/4+space_between_pieces      //3
 	
 	
 ];
@@ -111,6 +111,53 @@ for(i = 0; i < nb_triangles; i++) {
 	indices[j++]=i*nb_vert_triangle+3
 	indices[j++]=i*nb_vert_triangle+5;
 }
+	
+//**************************************************************************
+	
+var nb_parallepipedes=2;
+var nb_vert_parallepipede = 8.0;
+var start_index=0.0
+//FOR THE PARALLELEPIPEDES ********************************************************
+for(i = 0; i < nb_parallepipedes; i++) {
+	console.log(i)
+	start_index=nb_triangles*nb_vert_triangle+i*nb_vert_parallepipede
+		
+	// front face
+	indices[j++]=start_index+0;
+	indices[j++]=start_index+2;
+	indices[j++]=start_index+1; 
+	indices[j++]=start_index+0;
+	indices[j++]=start_index+3;
+	indices[j++]=start_index+2; 
+		
+	// back face
+	indices[j++]=start_index+4;
+	indices[j++]=start_index+5;
+	indices[j++]=start_index+6; 
+	indices[j++]=start_index+4;
+	indices[j++]=start_index+6;
+	indices[j++]=start_index+7; 
+		
+	// side
+	for (k=0; k<3; k++){
+		indices[j++]=start_index+k
+		indices[j++]=start_index+k+1
+		indices[j++]=start_index+k+5
+			
+		indices[j++]=start_index+k+5
+		indices[j++]=start_index+k+4
+		indices[j++]=start_index+k+0
+	}
+	//last side 
+	indices[j++]=start_index+3
+	indices[j++]=start_index+0
+	indices[j++]=start_index+7
+
+	indices[j++]=start_index+7
+	indices[j++]=start_index+0
+	indices[j++]=start_index+4
+	}
+
 
 var normals = [					// Color #:
 	 0.0, 0.0,-1.0, 	//  0

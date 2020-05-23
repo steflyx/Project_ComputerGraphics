@@ -102,6 +102,9 @@ function main() {
   var cubeRz = 0.0;
   var cubeS  = 0.5;
   var flag = 0;
+  
+  var cubex = 0.0;
+  var cubey = 0.0;
 
   cubeWorldMatrix[0] = utils.MakeWorld( 0.0, 1.0, -3.0, 0.0, 50.0, 30.0, 0.5);
   cubeWorldMatrix[1] = utils.MakeWorld( 1.5, 0.0, -3.0, 0.0, 0.0, 0.0, 0.5);
@@ -170,11 +173,21 @@ function main() {
 
   function animate(){
     var currentTime = (new Date).getTime();
+	var second = new Date().getSeconds();
+
     if(lastUpdateTime){
       var deltaC = (30 * (currentTime - lastUpdateTime)) / 1000.0;
-      cubeRx += deltaC;
-      cubeRy -= deltaC;
-      cubeRz += deltaC;
+      //cubeRx += deltaC;
+      //cubeRy -= deltaC;
+      //cubeRz += deltaC;
+	   
+	   console.log(second)
+	   if (second%2 == 0){
+		   cubex -= 0.03;
+	   }
+	   else{
+		   cubex += 0.03;
+	   }
       
       if (flag == 0) cubeS += deltaC/100;
       else cubeS -= deltaC/100;
@@ -183,7 +196,7 @@ function main() {
       else if (cubeS <= 0.5) flag = 0;
       
     }
-    cubeWorldMatrix[4] = utils.MakeWorld( 0.0, 0.0, 0.0, cubeRx, cubeRy, cubeRz, cubeS);
+    cubeWorldMatrix[4] = utils.MakeWorld( cubex,0.0, 0.0, cubeRx, cubeRy, cubeRz, 1.0);
     
     lastUpdateTime = currentTime;               
   }
