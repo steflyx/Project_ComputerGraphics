@@ -3,7 +3,7 @@ var cx = 3.0;
 var cy = 3.0;
 var cz = 2.5;
 var elevation = 0.0;
-var angle = 0.0;
+var angle = 90.0;
 
 var lookRadius = 10.0;
 
@@ -117,14 +117,20 @@ function main() {
   var program = null;
 
   var cubeNormalMatrix;
-  var cubeWorldMatrix = new Array();    //One world matrix for each cube...
-  cubeWorldMatrix[0] = utils.MakeWorld( -3.0, 0.0, -1.5, 0.0, 0.0, 0.0, 0.5);
-  //cubeWorldMatrix[1] = utils.MakeWorld( 3.0, 0.0, -1.5, 0.0, 0.0, 0.0, 0.5);
-  //cubeWorldMatrix[2] = utils.MakeWorld( 0.0, 0.0, -3.0, 0.0, 0.0, 0.0, 0.5);
+  var cubeWorldMatrix = new Array();    
+  //One world matrix for each piece
+  cubeWorldMatrix[0] = utils.MakeWorld( 0.0, 0.0, 0.5, 0.0, 0.0, 0.0, 0.5);
+  cubeWorldMatrix[1] = utils.MakeWorld( 0.0, 0.0, 0.5, 0.0, 0.0, 0.0, 0.5);
+  cubeWorldMatrix[2] = utils.MakeWorld( 0.0, 0.0, 0.5, 0.0, 0.0, 0.0, 0.5);
+  cubeWorldMatrix[3] = utils.MakeWorld( 0.0, 0.0, 0.5, 0.0, 0.0, 0.0, 0.5);
+  cubeWorldMatrix[4] = utils.MakeWorld( 0.0, 0.0, 0.5, 0.0, 0.0, 0.0, 0.5);
+  cubeWorldMatrix[5] = utils.MakeWorld( 0.0, 0.0, 0.5, 0.0, 0.0, 0.0, 0.5);
+  cubeWorldMatrix[6] = utils.MakeWorld( 0.0, 0.0, 0.5, 0.0, 0.0, 0.0, 0.5);
+
 
   //define directional light
-  var dirLightAlpha = -utils.degToRad(60);
-  var dirLightBeta  = -utils.degToRad(120);
+  var dirLightAlpha = -utils.degToRad(9);
+  var dirLightBeta  = -utils.degToRad(90);
 
   var directionalLight = [Math.cos(dirLightAlpha) * Math.cos(dirLightBeta),
               Math.sin(dirLightAlpha),
@@ -133,7 +139,14 @@ function main() {
   var directionalLightColor = [0.1, 1.0, 1.0];
 
   //Define material color
-  var cubeMaterialColor = pieceColors[0];
+  var cubeMaterialColor = new Array();  
+  cubeMaterialColor[0]= pieceColors[0];
+  cubeMaterialColor[1]= pieceColors[1];
+  cubeMaterialColor[2]= pieceColors[2];
+  cubeMaterialColor[3]= pieceColors[3];
+  cubeMaterialColor[4]= pieceColors[4];
+  cubeMaterialColor[5]= pieceColors[5];
+  cubeMaterialColor[6]= pieceColors[6];
 
   //For the animation
   var lastUpdateTime = (new Date).getTime();
@@ -143,10 +156,7 @@ function main() {
   var cubeRz = 0.0;
 
   //GL
-
   //Retrieve canvas and GL
-  
-
   //Add events listener
   canvas.addEventListener("mousedown", doMouseDown, false);
   canvas.addEventListener("mouseup", doMouseUp, false);
@@ -176,7 +186,7 @@ function main() {
   var materialDiffColorHandle = gl.getUniformLocation(program, 'mDiffColor');
   var lightDirectionHandle = gl.getUniformLocation(program, 'lightDirection');
   var lightColorHandle = gl.getUniformLocation(program, 'lightColor');
-  var normalMatrixPositionHandle = gl.getUniformLocation(program, 'nMatrix');
+  var normalMatrixPositionHandle = gl.getUniformLocation(program, 'nMatrix');;
   
   var perspectiveMatrix = utils.MakePerspective(90, gl.canvas.width/gl.canvas.height, 0.1, 100.0);
   var viewMatrix = utils.MakeView(3.0, 3.0, 2.5, -45.0, -40.0);
@@ -200,7 +210,8 @@ function main() {
   var indexBuffer = gl.createBuffer();
   gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer);
   gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(indices), gl.STATIC_DRAW); 
-    
+  
+  console.log(indices.length)
   //Draw everything
   drawScene();
 
@@ -221,10 +232,10 @@ function main() {
 
   //Draw everything
   function drawScene() {
-    animate();
+    //animate();
 
     //Clear the scene
-    gl.clearColor(0.85, 0.85, 0.85, 1.0);
+	gl.clearColor(0.85, 0.85, 0.85, 1.0);
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
     //Update perspective matrix (in case canvas size has changed)
@@ -238,22 +249,48 @@ function main() {
     viewMatrix = utils.invertMatrix(cameraMatrix);
 
     //For each piece
+	var nb_triangles=5;
+	var nb_indices_triangle=24;
+	for (var i=0;i< nb_triangles;i++){
+		var worldViewMatrix = utils.multiplyMatrices(viewMatrix, cubeWorldMatrix[i]);
+		var projectionMatrix = utils.multiplyMatrices(perspectiveMatrix, worldViewMatrix);
+		gl.uniformMatrix4fv(matrixLocation, gl.FALSE, utils.transposeMatrix(projectionMatrix));
 
-    var worldViewMatrix = utils.multiplyMatrices(viewMatrix, cubeWorldMatrix[0]);
-    var projectionMatrix = utils.multiplyMatrices(perspectiveMatrix, worldViewMatrix);
-    gl.uniformMatrix4fv(matrixLocation, gl.FALSE, utils.transposeMatrix(projectionMatrix));
+		var cubeNormalMatrix = utils.invertMatrix(utils.transposeMatrix(worldViewMatrix));
+		gl.uniformMatrix4fv(normalMatrixPositionHandle, gl.FALSE, utils.transposeMatrix(cubeNormalMatrix));
 
-    var cubeNormalMatrix = utils.invertMatrix(utils.transposeMatrix(worldViewMatrix));
-  //  gl.uniformMatrix4fv(normalMatrixPositionHandle, gl.FALSE, utils.transposeMatrix(cubeNormalMatrix));
+		gl.uniform3fv(materialDiffColorHandle, cubeMaterialColor[i]);
+		gl.uniform3fv(lightColorHandle,  directionalLightColor);
+		gl.uniform3fv(lightDirectionHandle,  directionalLight);
 
-    gl.uniform3fv(materialDiffColorHandle, cubeMaterialColor);
-    gl.uniform3fv(lightColorHandle,  directionalLightColor);
-    gl.uniform3fv(lightDirectionHandle,  directionalLight);
+		gl.bindVertexArray(vao);
+		gl.drawElements(gl.TRIANGLES,nb_indices_triangle, gl.UNSIGNED_SHORT, i*2*nb_indices_triangle);
+	}
+	
+	var nb_parallepipedes=2;
+	var nb_indices_parall=36;
+	for (var i=0; i < nb_parallepipedes;i++){
+		
+		var worldViewMatrix = utils.multiplyMatrices(viewMatrix, cubeWorldMatrix[i+nb_triangles]);
+		var projectionMatrix = utils.multiplyMatrices(perspectiveMatrix, worldViewMatrix);
+		gl.uniformMatrix4fv(matrixLocation, gl.FALSE, utils.transposeMatrix(projectionMatrix));
 
-    gl.bindVertexArray(vao);
-    gl.drawElements(gl.TRIANGLES, indices.length, gl.UNSIGNED_SHORT, 0 );
-  
-    
+		var cubeNormalMatrix = utils.invertMatrix(utils.transposeMatrix(worldViewMatrix));
+		 gl.uniformMatrix4fv(normalMatrixPositionHandle, gl.FALSE, utils.transposeMatrix(cubeNormalMatrix));
+
+		gl.uniform3fv(materialDiffColorHandle, cubeMaterialColor[i+nb_triangles]);
+		gl.uniform3fv(lightColorHandle,  directionalLightColor);
+		gl.uniform3fv(lightDirectionHandle,  directionalLight);
+
+		gl.bindVertexArray(vao);
+		gl.drawElements(gl.TRIANGLES,nb_indices_parall, gl.UNSIGNED_SHORT, (nb_indices_triangle*nb_triangles+i*nb_indices_parall)*2);
+	}
+	
+	
+      /*if (i < 3) gl.uniformMatrix4fv(normalMatrixPositionHandle, gl.FALSE, utils.transposeMatrix(cubeWorldMatrix[i]));
+      else gl.uniformMatrix4fv(normalMatrixPositionHandle, gl.FALSE, utils.transposeMatrix(cubeNormalMatrix));*/
+	 
+	 
     window.requestAnimationFrame(drawScene);
   }
 

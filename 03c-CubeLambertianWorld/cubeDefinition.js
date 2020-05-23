@@ -1,215 +1,324 @@
 //3D cube vertex coordinates and indices
-
-var square_size=5.0;
-var width=1;
-var space_between_pieces=1;
-
-var vertices = [
-	//big triangle 1
-	width/2,     0.0,            0.0,               //0
-	width/2,     square_size/2,  square_size/2,     //1
-	width/2,     square_size,    0.0,               //2
-	-width/2,    0.0,            0.0,               //3
-	-width/2,    square_size/2,  square_size/2,     //4
-	-width/2,    square_size,    0.0,               //5	
+function buildTriangleVertices(verticesList, positionEdge1 , positionEdge2 , positionEdge3, width){
+	//front face **************************************************************************
+	verticesList.push(width/2+positionEdge1[0],      positionEdge1[1],           positionEdge1[2],    //0
+	                width/2+positionEdge2[0],      positionEdge2[1],           positionEdge2[2],     //1
+	                width/2+positionEdge3[0],      positionEdge3[1],           positionEdge3[2])   //2
 	
+
+	//back face  **************************************************************************
+	verticesList.push(-width/2+positionEdge1[0],     positionEdge1[1],           positionEdge1[2],     //3
+	                -width/2+positionEdge2[0],     positionEdge2[1],           positionEdge2[2],     //4
+	                -width/2+positionEdge3[0],     positionEdge3[1],           positionEdge3[2])     //5	
+
+
+	//side faces **************************************************************************
+	verticesList.push(width/2+positionEdge1[0],       positionEdge1[1],           positionEdge1[2],     //6
+	                width/2+positionEdge2[0],       positionEdge2[1],           positionEdge2[2],     //7
+	                -width/2+positionEdge1[0],      positionEdge1[1],           positionEdge1[2],    //8
+	                -width/2+positionEdge2[0],      positionEdge2[1],           positionEdge2[2],   //9
+	
+	                width/2+positionEdge2[0],       positionEdge2[1],           positionEdge2[2],     //10
+	                width/2+positionEdge3[0],       positionEdge3[1],           positionEdge3[2],     //11
+	                -width/2+positionEdge2[0],      positionEdge2[1],           positionEdge2[2],    //12
+	                -width/2+positionEdge3[0],      positionEdge3[1],           positionEdge3[2],     //13
+	
+	                width/2+positionEdge3[0],       positionEdge3[1],           positionEdge3[2],     //14
+	                width/2+positionEdge1[0],       positionEdge1[1],           positionEdge1[2],     //15
+	                -width/2+positionEdge3[0],      positionEdge3[1],           positionEdge3[2],     //16
+	                -width/2+positionEdge1[0],      positionEdge1[1],           positionEdge1[2])  //17	
+}
+
+function buildTriangleNorms(normList, positionEdge1 , positionEdge2 , positionEdge3){
+	//front face **************************************************************************
+	normList.push(  1.0,      0.0,           0.0,    //0
+					1.0,      0.0,           0.0,    //1
+					1.0,      0.0,           0.0)    //2
+	
+	//back face  **************************************************************************
+	normList.push(-1.0,     0.0,           0.0,    //3
+				  -1.0,     0.0,           0.0,    //4
+				  -1.0,     0.0,           0.0)    //5	
+	
+	//side faces **************************************************************************
+	normList.push(0.0,    normalVector(positionEdge1,positionEdge2)[1],    normalVector(positionEdge1,positionEdge2)[2],    //6
+				  0.0,    normalVector(positionEdge1,positionEdge2)[1],    normalVector(positionEdge1,positionEdge2)[2],    //7
+				  0.0,    normalVector(positionEdge1,positionEdge2)[1],    normalVector(positionEdge1,positionEdge2)[2],    //8
+				  0.0,    normalVector(positionEdge1,positionEdge2)[1],    normalVector(positionEdge1,positionEdge2)[2],    //9
+	
+				  0.0,    normalVector(positionEdge2,positionEdge3)[1],    normalVector(positionEdge2,positionEdge3)[2],    //10
+				  0.0,    normalVector(positionEdge2,positionEdge3)[1],    normalVector(positionEdge2,positionEdge3)[2],    //11
+				  0.0,    normalVector(positionEdge2,positionEdge3)[1],    normalVector(positionEdge2,positionEdge3)[2],    //12
+				  0.0,    normalVector(positionEdge2,positionEdge3)[1],    normalVector(positionEdge2,positionEdge3)[2],    //13
+
+				  0.0,    normalVector(positionEdge3,positionEdge1)[1],    normalVector(positionEdge3,positionEdge1)[2],    //14
+				  0.0,    normalVector(positionEdge3,positionEdge1)[1],    normalVector(positionEdge3,positionEdge1)[2],    //15
+				  0.0,    normalVector(positionEdge3,positionEdge1)[1],    normalVector(positionEdge3,positionEdge1)[2],    //16
+				  0.0,    normalVector(positionEdge3,positionEdge1)[1],    normalVector(positionEdge3,positionEdge1)[2])    //17	
+}
+
+function normalVector(positionEdge1,positionEdge2){
+	var normalVect= [0.0,-(positionEdge2[2]-positionEdge1[2]), positionEdge2[1]-positionEdge1[1]];
+	
+	var length = Math.sqrt(normalVect[1]*normalVect[1]+normalVect[2]*normalVect[2]); //calculating length
+	normalVect[1] = normalVect[1]/length; //assigning new value to x (dividing x by length of the vector)
+	normalVect[2]= normalVect[2]/length; //assigning new value to y
+	return normalVect;
+}
+
+function buildTriangleIndices(indicesList,startVertice){
+
+	// front face
+	indicesList[j++]=startVertice+0;
+	indicesList[j++]=startVertice+2;
+	indicesList[j++]=startVertice+1; 
+
+	// back face
+	indicesList[j++]=startVertice+3;
+	indicesList[j++]=startVertice+4;
+	indicesList[j++]=startVertice+5; 
+		
+	//sides
+	for (var k=0; k<3; k++){
+		indicesList[j++]=startVertice+6+4*k;
+		indicesList[j++]=startVertice+7+4*k;
+		indicesList[j++]=startVertice+8+4*k; 
+				
+		indicesList[j++]=startVertice+8+4*k;
+		indicesList[j++]=startVertice+7+4*k;
+		indicesList[j++]=startVertice+9+4*k;
+	}	
+	
+}
+
+function buildParallelepipedeVertices(verticesList, positionEdge1 , positionEdge2 , positionEdge3, positionEdge4, width){
+	//front face  ***************************************************************** 
+	verticesList.push(width/2+positionEdge1[0],     positionEdge1[1],      positionEdge1[2],    //0
+					width/2+positionEdge2[0],     positionEdge2[1],      positionEdge2[2],    //1
+					width/2+positionEdge3[0],     positionEdge3[1],      positionEdge3[2],    //2
+					width/2+positionEdge4[0],     positionEdge4[1],      positionEdge4[2])    //3
+
+	//back face  ******************************************************************
+	verticesList.push(-width/2+positionEdge1[0],    positionEdge1[1],      positionEdge1[2],   //4
+					-width/2+positionEdge2[0],    positionEdge2[1],      positionEdge2[2],    //5
+					-width/2+positionEdge3[0],    positionEdge3[1],      positionEdge3[2],    //6
+					-width/2+positionEdge4[0],    positionEdge4[1],      positionEdge4[2])  //7
+	
+	//side faces **************************************************************************
+	verticesList.push(width/2+positionEdge1[0],       positionEdge1[1],           positionEdge1[2],    //8
+					width/2+positionEdge2[0],       positionEdge2[1],           positionEdge2[2],    //9
+					-width/2+positionEdge1[0],      positionEdge1[1],           positionEdge1[2],    //10
+					-width/2+positionEdge2[0],      positionEdge2[1],           positionEdge2[2],    //11
+	
+					width/2+positionEdge2[0],       positionEdge2[1],           positionEdge2[2],    //12
+					width/2+positionEdge3[0],       positionEdge3[1],           positionEdge3[2],    //13
+					-width/2+positionEdge2[0],      positionEdge2[1],           positionEdge2[2],    //14
+					-width/2+positionEdge3[0],      positionEdge3[1],           positionEdge3[2],    //15
+	
+					width/2+positionEdge3[0],       positionEdge3[1],           positionEdge3[2],    //16
+					width/2+positionEdge1[0],       positionEdge4[1],           positionEdge4[2],   //17
+					-width/2+positionEdge3[0],      positionEdge3[1],           positionEdge3[2],    //18
+					-width/2+positionEdge1[0],      positionEdge4[1],           positionEdge4[2],    //19
+	
+					width/2+positionEdge3[0],       positionEdge4[1],           positionEdge4[2],    //20
+					width/2+positionEdge1[0],       positionEdge1[1],           positionEdge1[2],    //21
+					-width/2+positionEdge3[0],      positionEdge4[1],           positionEdge4[2],    //22
+					-width/2+positionEdge1[0],      positionEdge1[1],           positionEdge1[2])   //23
+	
+}
+
+function buildParallelepipedeNorms(normList, positionEdge1 , positionEdge2 , positionEdge3, positionEdge4){
+	//front face  ***************************************************************** (
+	normList.push(1.0,      0.0,           0.0,    //0
+				  1.0,      0.0,           0.0,   //1
+			      1.0,      0.0,           0.0,     //2
+				  1.0,      0.0,           0.0)    //3
+	
+	//back face  ******************************************************************
+	normList.push(-1.0,      0.0,           0.0,     //4
+				-1.0,      0.0,           0.0 ,    //5
+				-1.0,      0.0,           0.0 ,    //6
+				-1.0,      0.0,           0.0 )    //7
+	
+	//side faces **************************************************************************
+	normList.push(0.0,    normalVector(positionEdge1,positionEdge2)[1],    normalVector(positionEdge1,positionEdge2)[2],   //8
+	              0.0,    normalVector(positionEdge1,positionEdge2)[1],    normalVector(positionEdge1,positionEdge2)[2],   //9
+	              0.0,    normalVector(positionEdge1,positionEdge2)[1],    normalVector(positionEdge1,positionEdge2)[2],   //10
+	              0.0,    normalVector(positionEdge1,positionEdge2)[1],    normalVector(positionEdge1,positionEdge2)[2],  //11
+	 
+	              0.0,    normalVector(positionEdge2,positionEdge3)[1],    normalVector(positionEdge2,positionEdge3)[2],   //13
+	              0.0,    normalVector(positionEdge2,positionEdge3)[1],    normalVector(positionEdge2,positionEdge3)[2],   //14
+	              0.0,    normalVector(positionEdge2,positionEdge3)[1],    normalVector(positionEdge2,positionEdge3)[2],   //15
+
+	              0.0,    normalVector(positionEdge3,positionEdge4)[1],    normalVector(positionEdge3,positionEdge4)[2],   //16
+	              0.0,    normalVector(positionEdge3,positionEdge4)[1],    normalVector(positionEdge3,positionEdge4)[2],   //17
+	              0.0,    normalVector(positionEdge3,positionEdge4)[1],    normalVector(positionEdge3,positionEdge4)[2],   //18
+	              0.0,    normalVector(positionEdge3,positionEdge4)[1],    normalVector(positionEdge3,positionEdge4)[2],   //19
+	
+	              0.0,    normalVector(positionEdge4,positionEdge1)[1],    normalVector(positionEdge4,positionEdge1)[2],   //20
+	              0.0,    normalVector(positionEdge4,positionEdge1)[1],    normalVector(positionEdge4,positionEdge1)[2],   //21
+	              0.0,    normalVector(positionEdge4,positionEdge1)[1],    normalVector(positionEdge4,positionEdge1)[2],   //22
+	              0.0,    normalVector(positionEdge4,positionEdge1)[1],    normalVector(positionEdge4,positionEdge1)[2])   //23
+
+}
+
+function buildParallelepipedeIndices(indicesList,startVertice){
+
+	// front face
+	indicesList[j++]=startVertice+0;
+	indicesList[j++]=startVertice+2;
+	indicesList[j++]=startVertice+1; 
+	
+	indicesList[j++]=startVertice+0;
+	indicesList[j++]=startVertice+3;
+	indicesList[j++]=startVertice+2; 
+
+	// back face
+	indicesList[j++]=startVertice+4;
+	indicesList[j++]=startVertice+5;
+	indicesList[j++]=startVertice+6;
+	
+	indicesList[j++]=startVertice+4;
+	indicesList[j++]=startVertice+6;
+	indicesList[j++]=startVertice+7; 
+		
+		
+	//sides
+	for (var k=0; k<4; k++){
+		indicesList[j++]=startVertice+8+4*k;
+		indicesList[j++]=startVertice+9+4*k;
+		indicesList[j++]=startVertice+10+4*k;  
+		
+		indicesList[j++]=startVertice+10+4*k;
+		indicesList[j++]=startVertice+9+4*k;
+		indicesList[j++]=startVertice+11+4*k;
+	}	
+}
+
+function buildVertices(){
+	vert=[]
+	//big triangle 1
+	buildTriangleVertices(vert, [0.0,0.0,0.0] , [0.0,square_size/2,square_size/2] , [0.0,square_size,0.0], width)
+		
 	//big triangle 2
-	width/2,     square_size+space_between_pieces,            0.0+space_between_pieces/2,                //0
-	width/2,     square_size/2+space_between_pieces,          square_size/2 +space_between_pieces/2,     //1
-	width/2,     square_size+space_between_pieces,            square_size +space_between_pieces/2,       //2
-	-width/2,    square_size+space_between_pieces,            0.0 +space_between_pieces/2,               //3
-	-width/2,    square_size/2+space_between_pieces,          square_size/2 +space_between_pieces/2,     //4
-	-width/2,    square_size+space_between_pieces   ,         square_size +space_between_pieces/2,       //5
+	buildTriangleVertices(vert, [0.0,  square_size  + space_between_pieces,   0.0 + space_between_pieces/2] , 
+								[0.0,  square_size/2 + space_between_pieces,  square_size/2 + space_between_pieces/2] ,
+								[0.0,  square_size + space_between_pieces,    square_size + space_between_pieces/2], 
+								width)
 	
 	//small triangle 1
-	width/2,     -space_between_pieces,                      0.0,               //0
-	width/2,     -space_between_pieces,                      square_size/2,     //1
-	width/2,     square_size/4-space_between_pieces,         square_size/4,     //2
-	-width/2,     -space_between_pieces,                      0.0,              //3
-	-width/2,     -space_between_pieces,                      square_size/2,    //4
-	-width/2,     square_size/4-space_between_pieces,         square_size/4,    //5
+	buildTriangleVertices(vert,	[0.0,   0.0 -space_between_pieces,             0.0] , 
+								[0.0,   -space_between_pieces,                 square_size/2] , 
+								[0.0,   square_size/4-space_between_pieces,    square_size/4],
+								width)
 	
 	//medium triangle 1
-	width/2,     -space_between_pieces,                      square_size/2+space_between_pieces,  //0
-	width/2,     -space_between_pieces,                      square_size+space_between_pieces,    //1
-	width/2,     square_size/2-space_between_pieces,         square_size+space_between_pieces,    //2
-	-width/2,     -space_between_pieces,                      square_size/2+space_between_pieces, //3
-	-width/2,     -space_between_pieces,                      square_size+space_between_pieces,   //4
-	-width/2,     square_size/2-space_between_pieces,         square_size+space_between_pieces,   //5
-	
+	buildTriangleVertices(vert,	[0.0,   0.0 -space_between_pieces,             square_size/2+space_between_pieces] , 
+								[0.0,   -space_between_pieces,                 square_size+space_between_pieces] , 
+								[0.0,   square_size/2-space_between_pieces,    square_size+space_between_pieces],
+								width)
+
 	//small triangle 2
-	width/2,     square_size/2,                     square_size/2+space_between_pieces/2,       //0
-	width/2,     square_size/4,                     3*square_size/4+space_between_pieces/2,     //1
-	width/2,     3*square_size/4,                    3*square_size/4+space_between_pieces/2,    //2
-	-width/2,     square_size/2,                     square_size/2+space_between_pieces/2,      //0
-	-width/2,     square_size/4,                     3*square_size/4+space_between_pieces/2,    //1
-	-width/2,     3*square_size/4,                    3*square_size/4+space_between_pieces/2,   //2
-	
+	buildTriangleVertices(vert,	[0.0,   square_size/2,             square_size/2+space_between_pieces/2] , 
+								[0.0,   square_size/4,             3*square_size/4+space_between_pieces/2] , 
+								[0.0,   3*square_size/4,           3*square_size/4+space_between_pieces/2],
+								width)
+								
 	//Square
-	width/2,     0-space_between_pieces/2,                     square_size/2+space_between_pieces/2,       //0
-	width/2,     square_size/4-space_between_pieces/2,         3*square_size/4+space_between_pieces/2,     //1
-	width/2,     square_size/2-space_between_pieces/2,         square_size/2+space_between_pieces/2,       //2
-	width/2,     square_size/4-space_between_pieces/2,         square_size/4+space_between_pieces/2,       //3
-	-width/2,     0-space_between_pieces/2,                     square_size/2+space_between_pieces/2,      //4
-	-width/2,     square_size/4-space_between_pieces/2,         3*square_size/4+space_between_pieces/2,    //5
-	-width/2,     square_size/2-space_between_pieces/2,         square_size/2+space_between_pieces/2,      //6
-	-width/2,     square_size/4-space_between_pieces/2,         square_size/4+space_between_pieces/2,      //7
+	buildParallelepipedeVertices(vert,	
+								[0.0,   0-space_between_pieces/2,       		   square_size/2+space_between_pieces/2] , 
+								[0.0,   square_size/4-space_between_pieces/2,      3*square_size/4+space_between_pieces/2] , 
+								[0.0,   square_size/2-space_between_pieces/2,      square_size/2+space_between_pieces/2],
+								[0.0,   square_size/4-space_between_pieces/2,      square_size/4+space_between_pieces/2],
+								width)
+							
 	
 	//parallelepiped
-	width/2,      square_size/4,    3*square_size/4 +space_between_pieces,     //0
-	width/2,      square_size/2,    square_size +space_between_pieces,         //1
-	width/2,	  square_size,      square_size +space_between_pieces,         //2
-	width/2,      3*square_size/4,  3*square_size/4+space_between_pieces,      //3
-	
-	-width/2,      square_size/4,    3*square_size/4 +space_between_pieces,    //0
-	-width/2,      square_size/2,    square_size +space_between_pieces,        //1
-	-width/2,	   square_size,      square_size +space_between_pieces,        //2
-	-width/2,      3*square_size/4,  3*square_size/4+space_between_pieces      //3
-	
-	
-];
+	buildParallelepipedeVertices(vert,	
+								[0.0,   square_size/4,        3*square_size/4 +space_between_pieces] , 
+								[0.0,   square_size/2,        square_size +space_between_pieces] , 
+								[0.0,   square_size,          square_size +space_between_pieces],
+								[0.0,   3*square_size/4,      3*square_size/4+space_between_pieces],
+								width)
+	return vert
 
-////// Creates indices 
-nb_triangles=5;
-var nb_vert_triangle = 6.0;
+}
+
+function buildNorms(){
+	norm=[]
+	//big triangle 1	
+	buildTriangleNorms(norm, [0.0,0.0,0.0] , [0.0,square_size/2,square_size/2] , [0.0,square_size,0.0])
 	
+	//big triangle 2
+	buildTriangleNorms(norm, [0.0,  square_size  + space_between_pieces,   0.0 + space_between_pieces/2] , 
+								[0.0,  square_size/2 + space_between_pieces,  square_size/2 + space_between_pieces/2] ,
+								[0.0,  square_size + space_between_pieces,    square_size + space_between_pieces/2], 
+								)
+	
+	//small triangle 1
+	buildTriangleNorms(norm,	[0.0,   0.0 -space_between_pieces,             0.0] , 
+								[0.0,   -space_between_pieces,                 square_size/2] , 
+								[0.0,   square_size/4-space_between_pieces,    square_size/4],
+								)
+	
+	//medium triangle 1
+	buildTriangleNorms(norm,	[0.0,   0.0 -space_between_pieces,             square_size/2+space_between_pieces] , 
+								[0.0,   -space_between_pieces,                 square_size+space_between_pieces] , 
+								[0.0,   square_size/2-space_between_pieces,    square_size+space_between_pieces],
+								)
+	
+	//small triangle 2
+	buildTriangleNorms(norm,	[0.0,   square_size/2,             square_size/2+space_between_pieces/2] , 
+								[0.0,   square_size/4,             3*square_size/4+space_between_pieces/2] , 
+								[0.0,   3*square_size/4,           3*square_size/4+space_between_pieces/2],
+								)
+	
+	//Square
+	buildParallelepipedeNorms(norm,	
+								[0.0,   0-space_between_pieces/2,       		   square_size/2+space_between_pieces/2] , 
+								[0.0,   square_size/4-space_between_pieces/2,      3*square_size/4+space_between_pieces/2] , 
+								[0.0,   square_size/2-space_between_pieces/2,      square_size/2+space_between_pieces/2],
+								[0.0,   square_size/4-space_between_pieces/2,      square_size/4+space_between_pieces/2],
+							)							
+	
+	//parallelepiped
+	buildParallelepipedeNorms(norm,	
+								[0.0,   square_size/4,        3*square_size/4 +space_between_pieces] , 
+								[0.0,   square_size/2,        square_size +space_between_pieces] , 
+								[0.0,   square_size,          square_size +space_between_pieces],
+								[0.0,   3*square_size/4,      3*square_size/4+space_between_pieces],
+								)
+	return norm
+
+}
+
+///// Creates vertices and Norms *************************************************************************************
+square_size=5.0;
+width=0.5;
+space_between_pieces=2;
+v=0
+n=0
+var vertices=buildVertices();
+var normals=buildNorms();
+	
+///// Creates indices ************************************************************************************************ 
+var nb_triangles=5;
+var nb_parallepipedes=2;
+var nb_vert_triangle = 18.0;
+var nb_vert_parallepipede = 24.0;
 var indices = []
 j=0
-//FOR THE TRIANGLES ********************************************************
-for(i = 0; i < nb_triangles; i++) {
-	// front face
-	indices[j++]= i*nb_vert_triangle+0;
-	indices[j++]=i*nb_vert_triangle+2;
-	indices[j++]=i*nb_vert_triangle+1; 
-	// back face
-	indices[j++]=i*nb_vert_triangle+3;
-	indices[j++]=i*nb_vert_triangle+4;
-	indices[j++]=i*nb_vert_triangle+5; 
-	
-	//sides
-	indices[j++]=i*nb_vert_triangle+0
-	indices[j++]=i*nb_vert_triangle+1
-	indices[j++]=i*nb_vert_triangle+3;  
-	
-	indices[j++]=i*nb_vert_triangle+1
-	indices[j++]=i*nb_vert_triangle+4
-	indices[j++]=i*nb_vert_triangle+3;
-	
-	indices[j++]=i*nb_vert_triangle+1
-	indices[j++]=i*nb_vert_triangle+5
-	indices[j++]=i*nb_vert_triangle+4;
-	
-	indices[j++]=i*nb_vert_triangle+2
-	indices[j++]=i*nb_vert_triangle+5
-	indices[j++]=i*nb_vert_triangle+1;
-	
-	indices[j++]=i*nb_vert_triangle+0
-	indices[j++]=i*nb_vert_triangle+5
-	indices[j++]=i*nb_vert_triangle+2;
-	
-	indices[j++]=i*nb_vert_triangle+0
-	indices[j++]=i*nb_vert_triangle+3
-	indices[j++]=i*nb_vert_triangle+5;
+//TRIANGLES 
+for(i = 0; i < nb_triangles; i++) {		
+	buildTriangleIndices(indices,i*nb_vert_triangle)
 }
 	
-//**************************************************************************
-	
-var nb_parallepipedes=2;
-var nb_vert_parallepipede = 8.0;
-var start_index=0.0
-//FOR THE PARALLELEPIPEDES ********************************************************
-for(i = 0; i < nb_parallepipedes; i++) {
-	console.log(i)
-	start_index=nb_triangles*nb_vert_triangle+i*nb_vert_parallepipede
-		
-	// front face
-	indices[j++]=start_index+0;
-	indices[j++]=start_index+2;
-	indices[j++]=start_index+1; 
-	indices[j++]=start_index+0;
-	indices[j++]=start_index+3;
-	indices[j++]=start_index+2; 
-		
-	// back face
-	indices[j++]=start_index+4;
-	indices[j++]=start_index+5;
-	indices[j++]=start_index+6; 
-	indices[j++]=start_index+4;
-	indices[j++]=start_index+6;
-	indices[j++]=start_index+7; 
-		
-	// side
-	for (k=0; k<3; k++){
-		indices[j++]=start_index+k
-		indices[j++]=start_index+k+1
-		indices[j++]=start_index+k+5
-			
-		indices[j++]=start_index+k+5
-		indices[j++]=start_index+k+4
-		indices[j++]=start_index+k+0
-	}
-	//last side 
-	indices[j++]=start_index+3
-	indices[j++]=start_index+0
-	indices[j++]=start_index+7
+//PARALLELEPIPEDES
+for(i = 0; i < 2; i++) {
+	buildParallelepipedeIndices(indices,nb_triangles*nb_vert_triangle+i*nb_vert_parallepipede)
+}
 
-	indices[j++]=start_index+7
-	indices[j++]=start_index+0
-	indices[j++]=start_index+4
-	}
-
-
-var normals = [					// Color #:
-	 0.0, 0.0,-1.0, 	//  0
-	 0.0, 0.0,-1.0,  //  1
-	 0.0, 0.0,-1.0,  //  2
-	 0.0, 0.0, 1.0,  //  3
-	 0.0, 0.0, 1.0,  //  4
-	 0.0, 0.0, 1.0,  //  5
-	 1.0, 0.0, 0.0,  //  6
-	 1.0, 0.0, 0.0,  //  7
-	 1.0, 0.0, 0.0,  //  8
-	 0.0,-1.0, 0.0,  //  9
-	 0.0,-1.0, 0.0,  // 10
-	 0.0,-1.0, 0.0,  // 11
-	-1.0, 0.0, 0.0,  // 12
-	-1.0, 0.0, 0.0,  // 13
-	-1.0, 0.0, 0.0,  // 14
-	 0.0, 1.0, 0.0,  // 15
-	 0.0, 1.0, 0.0,  // 16
-	 0.0, 1.0, 0.0,  // 17
-	 0.0, 0.0,-1.0,  // 18
-	 0.0, 0.0, 1.0,  // 19
-	 1.0, 0.0, 0.0,  // 20
-	 0.0,-1.0, 0.0,  // 21
-	-1.0, 0.0, 0.0,  // 22
-	 0.0, 1.0, 0.0,   // 23
-	 0.0, 0.0,-1.0, 	//  0
-	 0.0, 0.0,-1.0,  //  1
-	 0.0, 0.0,-1.0,  //  2
-	 0.0, 0.0, 1.0,  //  3
-	 0.0, 0.0, 1.0,  //  4
-	 0.0, 0.0, 1.0,  //  5
-	 1.0, 0.0, 0.0,  //  6
-	 1.0, 0.0, 0.0,  //  7
-	 1.0, 0.0, 0.0,  //  8
-	 0.0,-1.0, 0.0,  //  9
-	 0.0,-1.0, 0.0,  // 10
-	 0.0,-1.0, 0.0,  // 11
-	-1.0, 0.0, 0.0,  // 12
-	-1.0, 0.0, 0.0,  // 13
-	-1.0, 0.0, 0.0,  // 14
-	 0.0, 1.0, 0.0,  // 15
-	 0.0, 1.0, 0.0,  // 16
-	 0.0, 1.0, 0.0,  // 17
-	 0.0, 0.0,-1.0,  // 18
-	 0.0, 0.0, 1.0,  // 19
-	 1.0, 0.0, 0.0,  // 20
-	 0.0,-1.0, 0.0,  // 21
-	-1.0, 0.0, 0.0,  // 22
-	 0.0, 1.0, 0.0   // 23
-];
-	  
+ 
 var pieceColors = [
 
 	[10.0,0.0,0.0], //Red
