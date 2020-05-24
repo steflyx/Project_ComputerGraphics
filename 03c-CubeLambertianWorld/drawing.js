@@ -212,6 +212,7 @@ function main() {
   gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(indices), gl.STATIC_DRAW); 
   
   console.log(indices.length)
+  console.log(indices.length-24*5)
   //Draw everything
   drawScene();
 
@@ -227,7 +228,9 @@ function main() {
     }
 
     //Apply the modifications
-    lastUpdateTime = currentTime;               
+    lastUpdateTime = currentTime;  
+
+		
   }
 
   //Draw everything
@@ -285,10 +288,10 @@ function main() {
 		gl.bindVertexArray(vao);
 		gl.drawElements(gl.TRIANGLES,nb_indices_parall, gl.UNSIGNED_SHORT, (nb_indices_triangle*nb_triangles+i*nb_indices_parall)*2);
 	}
-	
-	
+
       /*if (i < 3) gl.uniformMatrix4fv(normalMatrixPositionHandle, gl.FALSE, utils.transposeMatrix(cubeWorldMatrix[i]));
       else gl.uniformMatrix4fv(normalMatrixPositionHandle, gl.FALSE, utils.transposeMatrix(cubeNormalMatrix));*/
+
 	 
 	 
     window.requestAnimationFrame(drawScene);

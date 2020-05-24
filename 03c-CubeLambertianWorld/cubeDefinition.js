@@ -1,34 +1,65 @@
 //3D cube vertex coordinates and indices
+
+function normalVector(positionEdge1,positionEdge2){
+	var normalVect= [0.0,-(positionEdge2[2]-positionEdge1[2]), positionEdge2[1]-positionEdge1[1]];
+	
+	var length = Math.sqrt(normalVect[1]*normalVect[1]+normalVect[2]*normalVect[2]); //calculating length
+	normalVect[1] = normalVect[1]/length; //assigning new value to x (dividing x by length of the vector)
+	normalVect[2]= normalVect[2]/length; //assigning new value to y
+	return normalVect;
+}
+
+/**
+This function updates the list of vertices "verticesList" by adding the vertices 
+of a triangle with a given position for the three edges and a given width
+
+@param verticesList : List of vertices 
+@param positionEdge1 : Position of the first edge of the triangle 
+@param positionEdge2 : Position of the second edge of the triangle 
+@param positionEdge3 : Position of the third edge of the triangle 
+@param width : Width of the triangle 
+
+
+**/
 function buildTriangleVertices(verticesList, positionEdge1 , positionEdge2 , positionEdge3, width){
 	//front face **************************************************************************
-	verticesList.push(width/2+positionEdge1[0],      positionEdge1[1],           positionEdge1[2],    //0
+	verticesList.push(width/2+positionEdge1[0],      positionEdge1[1],           positionEdge1[2],   //0
 	                width/2+positionEdge2[0],      positionEdge2[1],           positionEdge2[2],     //1
-	                width/2+positionEdge3[0],      positionEdge3[1],           positionEdge3[2])   //2
+	                width/2+positionEdge3[0],      positionEdge3[1],           positionEdge3[2])     //2
 	
 
 	//back face  **************************************************************************
-	verticesList.push(-width/2+positionEdge1[0],     positionEdge1[1],           positionEdge1[2],     //3
+	verticesList.push(-width/2+positionEdge1[0],     positionEdge1[1],           positionEdge1[2],   //3
 	                -width/2+positionEdge2[0],     positionEdge2[1],           positionEdge2[2],     //4
 	                -width/2+positionEdge3[0],     positionEdge3[1],           positionEdge3[2])     //5	
 
 
 	//side faces **************************************************************************
-	verticesList.push(width/2+positionEdge1[0],       positionEdge1[1],           positionEdge1[2],     //6
+	verticesList.push(width/2+positionEdge1[0],       positionEdge1[1],           positionEdge1[2],   //6
 	                width/2+positionEdge2[0],       positionEdge2[1],           positionEdge2[2],     //7
-	                -width/2+positionEdge1[0],      positionEdge1[1],           positionEdge1[2],    //8
-	                -width/2+positionEdge2[0],      positionEdge2[1],           positionEdge2[2],   //9
+	                -width/2+positionEdge1[0],      positionEdge1[1],           positionEdge1[2],     //8
+	                -width/2+positionEdge2[0],      positionEdge2[1],           positionEdge2[2],     //9
 	
 	                width/2+positionEdge2[0],       positionEdge2[1],           positionEdge2[2],     //10
 	                width/2+positionEdge3[0],       positionEdge3[1],           positionEdge3[2],     //11
-	                -width/2+positionEdge2[0],      positionEdge2[1],           positionEdge2[2],    //12
+	                -width/2+positionEdge2[0],      positionEdge2[1],           positionEdge2[2],     //12
 	                -width/2+positionEdge3[0],      positionEdge3[1],           positionEdge3[2],     //13
 	
 	                width/2+positionEdge3[0],       positionEdge3[1],           positionEdge3[2],     //14
 	                width/2+positionEdge1[0],       positionEdge1[1],           positionEdge1[2],     //15
 	                -width/2+positionEdge3[0],      positionEdge3[1],           positionEdge3[2],     //16
-	                -width/2+positionEdge1[0],      positionEdge1[1],           positionEdge1[2])  //17	
+	                -width/2+positionEdge1[0],      positionEdge1[1],           positionEdge1[2])     //17	
 }
 
+/**
+This function updates the list of normal "normList" by adding the normals 
+of a triangle with a given position for the three edges
+
+@param normList : List of normals 
+@param positionEdge1 : Position of the first edge of the triangle 
+@param positionEdge2 : Position of the second edge of the triangle 
+@param positionEdge3 : Position of the third edge of the triangle 
+**/
 function buildTriangleNorms(normList, positionEdge1 , positionEdge2 , positionEdge3){
 	//front face **************************************************************************
 	normList.push(  1.0,      0.0,           0.0,    //0
@@ -57,15 +88,13 @@ function buildTriangleNorms(normList, positionEdge1 , positionEdge2 , positionEd
 				  0.0,    normalVector(positionEdge3,positionEdge1)[1],    normalVector(positionEdge3,positionEdge1)[2])    //17	
 }
 
-function normalVector(positionEdge1,positionEdge2){
-	var normalVect= [0.0,-(positionEdge2[2]-positionEdge1[2]), positionEdge2[1]-positionEdge1[1]];
-	
-	var length = Math.sqrt(normalVect[1]*normalVect[1]+normalVect[2]*normalVect[2]); //calculating length
-	normalVect[1] = normalVect[1]/length; //assigning new value to x (dividing x by length of the vector)
-	normalVect[2]= normalVect[2]/length; //assigning new value to y
-	return normalVect;
-}
+/**
+This function updates the list of indices "indicesList" by adding the indices of a triangle
 
+@param indicesList : List of indicesList 
+@param startVertice : index of the vertice from which we start
+
+**/
 function buildTriangleIndices(indicesList,startVertice){
 
 	// front face
@@ -91,6 +120,19 @@ function buildTriangleIndices(indicesList,startVertice){
 	
 }
 
+/**
+This function updates the list of vertices "verticesList" by adding the vertices 
+of a parallelepiped with a given position for the three edges and a given width
+
+@param verticesList : List of vertices 
+@param positionEdge1 : Position of the first edge of the parallelepiped 
+@param positionEdge2 : Position of the second edge of the parallelepiped 
+@param positionEdge3 : Position of the third edge of the parallelepiped 
+@param positionEdge4 : Position of the fourth edge of the parallelepiped 
+@param width : Width of the parallelepiped 
+
+
+**/
 function buildParallelepipedeVertices(verticesList, positionEdge1 , positionEdge2 , positionEdge3, positionEdge4, width){
 	//front face  ***************************************************************** 
 	verticesList.push(width/2+positionEdge1[0],     positionEdge1[1],      positionEdge1[2],    //0
@@ -127,41 +169,62 @@ function buildParallelepipedeVertices(verticesList, positionEdge1 , positionEdge
 	
 }
 
+/**
+This function updates the list of normal "normList" by adding the normals 
+of a parallelepiped with a given position for the four edges
+
+@param normList : List of normals 
+@param positionEdge1 : Position of the first edge of the parallelepiped 
+@param positionEdge2 : Position of the second edge of the parallelepiped 
+@param positionEdge3 : Position of the third edge of the parallelepiped 
+@param positionEdge4 : Position of the fourth edge of the parallelepiped 
+**/
 function buildParallelepipedeNorms(normList, positionEdge1 , positionEdge2 , positionEdge3, positionEdge4){
 	//front face  ***************************************************************** (
-	normList.push(1.0,      0.0,           0.0,    //0
-				  1.0,      0.0,           0.0,   //1
-			      1.0,      0.0,           0.0,     //2
-				  1.0,      0.0,           0.0)    //3
+	normList.push( 1.0,      0.0,           0.0,   //0
+				   1.0,      0.0,           0.0,   //1
+			       1.0,      0.0,           0.0,   //2
+				   1.0,      0.0,           0.0)   //3
 	
 	//back face  ******************************************************************
 	normList.push(-1.0,      0.0,           0.0,     //4
-				-1.0,      0.0,           0.0 ,    //5
-				-1.0,      0.0,           0.0 ,    //6
-				-1.0,      0.0,           0.0 )    //7
+				  -1.0,      0.0,           0.0 ,    //5
+				  -1.0,      0.0,           0.0 ,    //6
+				  -1.0,      0.0,           0.0 )    //7
 	
-	//side faces **************************************************************************
-	normList.push(0.0,    normalVector(positionEdge1,positionEdge2)[1],    normalVector(positionEdge1,positionEdge2)[2],   //8
-	              0.0,    normalVector(positionEdge1,positionEdge2)[1],    normalVector(positionEdge1,positionEdge2)[2],   //9
-	              0.0,    normalVector(positionEdge1,positionEdge2)[1],    normalVector(positionEdge1,positionEdge2)[2],   //10
-	              0.0,    normalVector(positionEdge1,positionEdge2)[1],    normalVector(positionEdge1,positionEdge2)[2],  //11
+	//side faces ******************************************************************
+	var normalFace1= normalVector(positionEdge1,positionEdge2)
+	var normalFace2= normalVector(positionEdge2,positionEdge3)
+	var normalFace3= normalVector(positionEdge3,positionEdge4)
+	var normalFace4= normalVector(positionEdge4,positionEdge1)
+	normList.push(0.0,    normalFace1[1],    normalFace1[2],   //8
+	              0.0,    normalFace1[1],    normalFace1[2],   //9
+	              0.0,    normalFace1[1],    normalFace1[2],   //10
+	              0.0,    normalFace1[1],    normalFace1[2],  //11
 	 
-	              0.0,    normalVector(positionEdge2,positionEdge3)[1],    normalVector(positionEdge2,positionEdge3)[2],   //13
-	              0.0,    normalVector(positionEdge2,positionEdge3)[1],    normalVector(positionEdge2,positionEdge3)[2],   //14
-	              0.0,    normalVector(positionEdge2,positionEdge3)[1],    normalVector(positionEdge2,positionEdge3)[2],   //15
+	              0.0,    normalFace2[1],    normalFace2[2],   //13
+	              0.0,    normalFace2[1],    normalFace2[2],   //14
+	              0.0,    normalFace2[1],    normalFace2[2],   //15
 
-	              0.0,    normalVector(positionEdge3,positionEdge4)[1],    normalVector(positionEdge3,positionEdge4)[2],   //16
-	              0.0,    normalVector(positionEdge3,positionEdge4)[1],    normalVector(positionEdge3,positionEdge4)[2],   //17
-	              0.0,    normalVector(positionEdge3,positionEdge4)[1],    normalVector(positionEdge3,positionEdge4)[2],   //18
-	              0.0,    normalVector(positionEdge3,positionEdge4)[1],    normalVector(positionEdge3,positionEdge4)[2],   //19
+	              0.0,    normalFace3[1],    normalFace3[2],   //16
+	              0.0,    normalFace3[1],    normalFace3[2],   //17
+	              0.0,    normalFace3[1],    normalFace3[2],   //18
+	              0.0,    normalFace3[1],    normalFace3[2],   //19
 	
-	              0.0,    normalVector(positionEdge4,positionEdge1)[1],    normalVector(positionEdge4,positionEdge1)[2],   //20
-	              0.0,    normalVector(positionEdge4,positionEdge1)[1],    normalVector(positionEdge4,positionEdge1)[2],   //21
-	              0.0,    normalVector(positionEdge4,positionEdge1)[1],    normalVector(positionEdge4,positionEdge1)[2],   //22
-	              0.0,    normalVector(positionEdge4,positionEdge1)[1],    normalVector(positionEdge4,positionEdge1)[2])   //23
+	              0.0,    normalFace4[1],    normalFace4[2],   //20
+	              0.0,    normalFace4[1],    normalFace4[2],   //21
+	              0.0,    normalFace4[1],    normalFace4[2],   //22
+	              0.0,    normalFace4[1],    normalFace4[2])   //23
 
 }
 
+/**
+This function updates the list of indices "indicesList" by adding the indices of a parallelepiped
+
+@param indicesList : List of indicesList 
+@param startVertice : index of the vertice from which we start
+
+**/
 function buildParallelepipedeIndices(indicesList,startVertice){
 
 	// front face
@@ -279,7 +342,7 @@ function buildNorms(){
 								[0.0,   square_size/4-space_between_pieces/2,      3*square_size/4+space_between_pieces/2] , 
 								[0.0,   square_size/2-space_between_pieces/2,      square_size/2+space_between_pieces/2],
 								[0.0,   square_size/4-space_between_pieces/2,      square_size/4+space_between_pieces/2],
-							)							
+								)							
 	
 	//parallelepiped
 	buildParallelepipedeNorms(norm,	
@@ -314,7 +377,7 @@ for(i = 0; i < nb_triangles; i++) {
 }
 	
 //PARALLELEPIPEDES
-for(i = 0; i < 2; i++) {
+for(i = 0; i < nb_parallepipedes; i++) {
 	buildParallelepipedeIndices(indices,nb_triangles*nb_vert_triangle+i*nb_vert_parallepipede)
 }
 
