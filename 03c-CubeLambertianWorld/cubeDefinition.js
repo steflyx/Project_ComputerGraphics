@@ -205,6 +205,7 @@ function buildParallelepipedeNorms(normList, positionEdge1 , positionEdge2 , pos
 	              0.0,    normalFace2[1],    normalFace2[2],   //13
 	              0.0,    normalFace2[1],    normalFace2[2],   //14
 	              0.0,    normalFace2[1],    normalFace2[2],   //15
+		      0.0,    normalFace2[1],    normalFace2[2],   //15
 
 	              0.0,    normalFace3[1],    normalFace3[2],   //16
 	              0.0,    normalFace3[1],    normalFace3[2],   //17
