@@ -72,7 +72,7 @@ function doMouseMove(event) {
     //Only allow a partial rotation
     if((dx != 0) || (dy != 0)) {
       newAngle = angle + 0.5 * dx;
-      if(newAngle >= -90.0 && newAngle <= 90.0){
+      if(newAngle >= -135.0 && newAngle <= -45.0){
         angle = newAngle;
       }
       newElevation = elevation + 0.5 * dy;
@@ -171,7 +171,7 @@ function main() {
   }
   utils.resizeCanvasToDisplaySize(gl.canvas);
   gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
-  gl.clearColor(0.85, 0.85, 0.85, 1.0);
+  //gl.clearColor(0.85, 0.85, 0.85, 1.0);
   gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
   gl.enable(gl.DEPTH_TEST);
 
@@ -238,7 +238,7 @@ function main() {
     //animate();
 
     //Clear the scene
-	gl.clearColor(0.85, 0.85, 0.85, 1.0);
+	//gl.clearColor(0.85, 0.85, 0.85, 1.0);
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
     //Update perspective matrix (in case canvas size has changed)
