@@ -359,7 +359,7 @@ function buildNorms(){
 ///// Creates vertices and Norms *************************************************************************************
 square_size=5.0;
 width=0.5;
-space_between_pieces=2;
+space_between_pieces=0.0;
 v=0
 n=0
 var vertices=buildVertices();
