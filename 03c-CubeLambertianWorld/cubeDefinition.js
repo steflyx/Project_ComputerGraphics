@@ -394,3 +394,7 @@ var pieceColors = [
 	[10.0,0.5,0.0]  //Orange
 
 ]
+
+var selectedColors =[
+    [10.0,1.0,1.0] //white
+]

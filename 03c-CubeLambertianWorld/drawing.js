@@ -304,6 +304,12 @@ function main() {
                //For each piece
                 var nb_indices_triangle=24;
                 for (var i=0;i< nb_triangles;i++){
+                    if (i==last_id-1){
+                        cubeMaterialColor[i]=selectedColors[0]
+                    }
+                    else {
+                         cubeMaterialColor[i]=pieceColors[i]
+                    }
                     var worldViewMatrix = utils.multiplyMatrices(viewMatrix, cubeWorldMatrix[i]);
                     var projectionMatrix = utils.multiplyMatrices(perspectiveMatrix, worldViewMatrix);
                     gl.uniformMatrix4fv(matrixLocation, gl.FALSE, utils.transposeMatrix(projectionMatrix));
@@ -321,7 +327,12 @@ function main() {
 
                 var nb_indices_parall=36;
                 for (var i=0; i < nb_parallepipedes;i++){
-
+                     if (i+nb_triangles==last_id-1){
+                     cubeMaterialColor[i+nb_triangles]=selectedColors[0]
+                    }
+                    else {
+                      cubeMaterialColor[i+nb_triangles]=pieceColors[i+nb_triangles]
+                    }    
                     var worldViewMatrix = utils.multiplyMatrices(viewMatrix, cubeWorldMatrix[i+nb_triangles]);
                     var projectionMatrix = utils.multiplyMatrices(perspectiveMatrix, worldViewMatrix);
                     gl.uniformMatrix4fv(matrixLocation, gl.FALSE, utils.transposeMatrix(projectionMatrix));
