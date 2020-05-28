@@ -181,10 +181,10 @@ of a parallelepiped with a given position for the four edges
 **/
 function buildParallelepipedeNorms(normList, positionEdge1 , positionEdge2 , positionEdge3, positionEdge4){
 	//front face  ***************************************************************** (
-	normList.push( 1.0,      0.0,           0.0,   //0
-				   1.0,      0.0,           0.0,   //1
-			       1.0,      0.0,           0.0,   //2
-				   1.0,      0.0,           0.0)   //3
+	normList.push(1.0,      0.0,           0.0,   //0
+				  1.0,      0.0,           0.0,   //1
+			      1.0,      0.0,           0.0,   //2
+				  1.0,      0.0,           0.0)   //3
 	
 	//back face  ******************************************************************
 	normList.push(-1.0,      0.0,           0.0,     //4
@@ -205,7 +205,7 @@ function buildParallelepipedeNorms(normList, positionEdge1 , positionEdge2 , pos
 	              0.0,    normalFace2[1],    normalFace2[2],   //13
 	              0.0,    normalFace2[1],    normalFace2[2],   //14
 	              0.0,    normalFace2[1],    normalFace2[2],   //15
-		      0.0,    normalFace2[1],    normalFace2[2],   //15
+	              0.0,    normalFace2[1],    normalFace2[2],
 
 	              0.0,    normalFace3[1],    normalFace3[2],   //16
 	              0.0,    normalFace3[1],    normalFace3[2],   //17
@@ -258,7 +258,7 @@ function buildParallelepipedeIndices(indicesList,startVertice){
 		indicesList[j++]=startVertice+11+4*k;
 	}	
 }
-
+/*
 function buildVertices(){
 	vert=[]
 	//big triangle 1
@@ -306,6 +306,58 @@ function buildVertices(){
 								width)
 	return vert
 
+}*/
+
+function buildVertices(){
+	vert=[]
+	//big triangle 1
+	buildTriangleVertices(vert, [0.0,  square_size/6,  -square_size/2] , 
+								[0.0,  -square_size/3,  0.0] ,
+								[0.0,  square_size/6,  square_size/2], 
+								width)
+		
+	//big triangle 2
+	buildTriangleVertices(vert, [0.0,  square_size/6,  -square_size/2] , 
+								[0.0,  -square_size/3,  0.0] ,
+								[0.0,  square_size/6,  square_size/2], 
+								width)
+	
+	//small triangle 1
+	buildTriangleVertices(vert, [0.0,  square_size/12,  -square_size/4] , 
+								[0.0,  -square_size/6,  0.0] ,
+								[0.0,  square_size/12,  square_size/4], 
+								width)
+	
+	//medium triangle 1
+	buildTriangleVertices(vert,	[0.0,   Math.sqrt(2) * square_size/12,  -Math.sqrt(2) * square_size/4] , 
+								[0.0,   -Math.sqrt(2) * square_size/6, 0.0] , 
+								[0.0,   Math.sqrt(2) * square_size/12,  Math.sqrt(2) * square_size/4],
+								width)
+
+	//small triangle 2
+	buildTriangleVertices(vert, [0.0,  square_size/12,  -square_size/4] , 
+								[0.0,  -square_size/6,  0.0] ,
+								[0.0,  square_size/12,  square_size/4], 
+								width)
+								
+	//Square
+	buildParallelepipedeVertices(vert,	
+								[0.0,   0.0, -square_size/4] , 
+								[0.0,   square_size/4,  0.0] , 
+								[0.0,   0.0,  square_size/4],
+								[0.0,   -square_size/4, 0.0],
+								width)
+							
+	
+	//parallelepiped
+	buildParallelepipedeVertices(vert,	
+								[0.0,   square_size/8,  -3*square_size/8] , 
+								[0.0,   square_size/8,  square_size/8], 
+								[0.0,   -square_size/8, 3*square_size/8],
+								[0.0,   -square_size/8, -square_size/8],
+								width)
+
+	return vert;
 }
 
 function buildNorms(){
@@ -359,7 +411,7 @@ function buildNorms(){
 ///// Creates vertices and Norms *************************************************************************************
 square_size=5.0;
 width=0.5;
-space_between_pieces=0.0;
+space_between_pieces=2;
 v=0
 n=0
 var vertices=buildVertices();
