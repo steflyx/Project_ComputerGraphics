@@ -8,8 +8,8 @@ var lookRadius = 10.0;
 
 //parameters of pieces of the tangram
 var nb_triangles = 5;
-var nb_parallepipedes = 2;
-var nb_objects = nb_parallepipedes + nb_triangles;
+var nb_parallepipedes = 2 ;
+var nb_objects = nb_parallepipedes+nb_triangles;
 
 
 var canvas = document.getElementById("my-canvas");
@@ -80,8 +80,10 @@ var rightArrow = false;
 var leftArrow = false;
 var upArrow = false;
 var downArrow = false;
-var symmetry = false;
+var leftRotate = false;
+var rightRotate = false;
 var last_id = 0;
+var symmetry = false;
 
 
 
@@ -95,8 +97,6 @@ function doMouseDown(event) {
   last_id = id;
 }
 function doMouseUp(event) {
-  lastMouseX = -100;
-  lastMouseY = -100;
   mouseState = false;
 }
 
@@ -121,6 +121,8 @@ function doMouseMove(event) {
       }
     }
   }*/
+ 
+    
 }
 
 //Zoom in when mouse wheel is used
@@ -159,6 +161,12 @@ var keyFunctionUp =function(e) {
   if (e.keyCode == 40){
     downArrow = false;
   }
+  if (e.keyCode == 65){
+    leftRotate = false;
+  }
+  if (e.keyCode == 68){
+    rightRotate = false;
+  }
   if (e.keyCode == 83){
     symmetry = false;
   }
@@ -178,6 +186,12 @@ var keyFunctionDown = function(e) {
   if (e.keyCode == 40){
     downArrow = true;
   }
+  if (e.keyCode == 65){
+    leftRotate = true;
+  }
+  if (e.keyCode == 68){
+    rightRotate = true;
+  }
   if (e.keyCode == 83){
     symmetry = true;
   }
@@ -185,6 +199,12 @@ var keyFunctionDown = function(e) {
 window.addEventListener("keydown", keyFunctionDown, false);
 
 
+function ColorToId(color){
+    tmp_array = [color[0]/255,color[1]/255,color[2]/255,color[3]/255]
+    //console.log(tmp_array == [1.0,0.0,0.0,1.0])
+    id = picking_colors.findIndex(x => x == tmp_array)
+    return id
+}
 
 function main() {
 
@@ -196,7 +216,7 @@ function main() {
   var cubeMaterialColor = new Array(); //Define material color for each piece
   var piecesIdentifiers= new Array();  //Define an id for each piece
     for (var i=0; i< nb_objects; i++){
-        cubeWorldMatrix[i] = utils.MakeWorld( 2.5, 1.0, 0.5, 0.0, 0.0, 5.0, 0.5);
+        cubeWorldMatrix[i] = utils.MakeWorld( 2.5, 1.0, 0.5, 0.0, 0.0, 0.0, 0.5);
         cubeMaterialColor[i]= pieceColors[i];
         piecesIdentifiers[i]=[
             ((i+1 & 0x000000FF) >>  0)/255.0,
@@ -211,9 +231,9 @@ function main() {
   //Positions for animations purposes
   var positions = new Array();
   for (var i=0; i<nb_objects;i++){
-    positions[i] = [2.5,1.0,0.5];
+    positions[i] = [2.5,1.0,0.5,0.0];
   }
-    
+
   //Rx for animations purposes
   var Rx = new Array();
   for (var i=0; i<nb_objects;i++){
@@ -332,7 +352,7 @@ function main() {
 
                 var nb_indices_parall=36;
                 for (var i=0; i < nb_parallepipedes;i++){
-                     if (i+nb_triangles==last_id-1){
+                    if (i+nb_triangles==last_id-1){
                      cubeMaterialColor[i+nb_triangles]=selectedColors[0]
                     }
                     else {
@@ -408,30 +428,22 @@ function main() {
     dx = 0.1;
     dy = 0.1;
     dz = 0.1;
+    dl = 1.0;
 
     //Modify the scene's attributes
     if(lastUpdateTime){
       var deltaC = (30 * (currentTime - lastUpdateTime)) / 1000.0;
-      if (last_id != 0 && (rightArrow || leftArrow || upArrow || downArrow)){
+      if (last_id != 0 && (rightArrow || leftArrow || upArrow || downArrow || leftRotate || rightRotate || symmetry)){
+
         positions[last_id-1][1] += (dy * upArrow) - (dy * downArrow);
         positions[last_id-1][2] += (dz * rightArrow) - (dz * leftArrow);
-        cubeWorldMatrix[last_id-1] = utils.MakeWorld(positions[last_id-1][0], positions[last_id-1][1], positions[last_id-1][2], Rx[last_id-1], 0.0, 0.0, 0.5);
+        positions[last_id-1][3] += (dl * leftRotate) - (dl * rightRotate);
+        Rx[last_id-1] += (5 * symmetry);
+        Rx[last_id-1] %= 360;
+        
+        cubeWorldMatrix[last_id-1] = utils.MakeWorld(positions[last_id-1][0], positions[last_id-1][1], positions[last_id-1][2], Rx[last_id-1], positions[last_id-1][3], 0.0, 0.5);
+
       }
-      //If the user pressed the symmetry, rotate the selected piece of 180°
-      if (last_id != 0 && ((symmetry) || (Rx[last_id-1] % 180 != 0))){
-        Rx[last_id-1] = (Rx[last_id-1]+5)%360
-        console.log("animate symmetry Rx[last_id]="+Rx[last_id-1])
-        cubeWorldMatrix[last_id-1] = utils.MakeWorld(positions[last_id-1][0], positions[last_id-1][1], positions[last_id-1][2],Rx[last_id-1], 0.0, 0.0, 0.5);
-      }
-      //If the user pressed selected a new piece while the rotation animation, we continue rotating the piece that are in the midlle of a rotation 
-      //Without this piece of code, if the user click on a new piece before the end of the symetry animation, the piece stay stuck.
-      for (var i=0; i< nb_objects; i++){
-        if ((Rx[i] % 180 != 0)){
-        Rx[i] = (Rx[i]+5)%360
-        console.log("animate symmetry Rx[last_id]="+Rx[last_id-1])
-        cubeWorldMatrix[i] = utils.MakeWorld(positions[i][0], positions[i][1], positions[i][2],Rx[i], 0.0, 0.0, 0.5);
-      }
-      }    
     }
 
     //Apply the modifications
@@ -457,6 +469,42 @@ function main() {
     var cameraMatrix= utils.multiplyMatrices(rotationX,rotationY);
     cameraMatrix = utils.multiplyMatrices(cameraMatrix,utils.MakeTranslateMatrix(0, 0, lookRadius));
     viewMatrix = utils.invertMatrix(cameraMatrix);
+
+   /* //For each piece
+  var nb_indices_triangle=24;
+  for (var i=0;i< nb_triangles;i++){
+    var worldViewMatrix = utils.multiplyMatrices(viewMatrix, cubeWorldMatrix[i]);
+    var projectionMatrix = utils.multiplyMatrices(perspectiveMatrix, worldViewMatrix);
+    gl.uniformMatrix4fv(matrixLocation, gl.FALSE, utils.transposeMatrix(projectionMatrix));
+
+    var cubeNormalMatrix = utils.invertMatrix(utils.transposeMatrix(worldViewMatrix));
+    gl.uniformMatrix4fv(normalMatrixPositionHandle, gl.FALSE, utils.transposeMatrix(cubeNormalMatrix));
+
+    gl.uniform3fv(materialDiffColorHandle, cubeMaterialColor[i]);
+    gl.uniform3fv(lightColorHandle,  directionalLightColor);
+    gl.uniform3fv(lightDirectionHandle,  directionalLight);
+
+    gl.bindVertexArray(vao);
+    gl.drawElements(gl.TRIANGLES,nb_indices_triangle, gl.UNSIGNED_SHORT, i*2*nb_indices_triangle);
+  }
+  
+  var nb_indices_parall=36;
+  for (var i=0; i < nb_parallepipedes;i++){
+    
+    var worldViewMatrix = utils.multiplyMatrices(viewMatrix, cubeWorldMatrix[i+nb_triangles]);
+    var projectionMatrix = utils.multiplyMatrices(perspectiveMatrix, worldViewMatrix);
+    gl.uniformMatrix4fv(matrixLocation, gl.FALSE, utils.transposeMatrix(projectionMatrix));
+
+    var cubeNormalMatrix = utils.invertMatrix(utils.transposeMatrix(worldViewMatrix));
+     gl.uniformMatrix4fv(normalMatrixPositionHandle, gl.FALSE, utils.transposeMatrix(cubeNormalMatrix));
+
+    gl.uniform3fv(materialDiffColorHandle, cubeMaterialColor[i+nb_triangles]);
+    gl.uniform3fv(lightColorHandle,  directionalLightColor);
+    gl.uniform3fv(lightDirectionHandle,  directionalLight);
+
+    gl.bindVertexArray(vao);
+    gl.drawElements(gl.TRIANGLES,nb_indices_parall, gl.UNSIGNED_SHORT, (nb_indices_triangle*nb_triangles+i*nb_indices_parall)*2);
+  }*/
       
        drawObjects(true)
       
