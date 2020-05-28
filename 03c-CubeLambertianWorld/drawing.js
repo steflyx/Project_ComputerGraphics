@@ -438,12 +438,13 @@ function main() {
         positions[last_id-1][1] += (dy * upArrow) - (dy * downArrow);
         positions[last_id-1][2] += (dz * rightArrow) - (dz * leftArrow);
         positions[last_id-1][3] += (dl * leftRotate) - (dl * rightRotate);
-        Rx[last_id-1] += (5 * symmetry);
+        Rx[last_id-1] += (180 * symmetry);
         Rx[last_id-1] %= 360;
         
-        cubeWorldMatrix[last_id-1] = utils.MakeWorld(positions[last_id-1][0], positions[last_id-1][1], positions[last_id-1][2], Rx[last_id-1], positions[last_id-1][3], 0.0, 0.5);
+        cubeWorldMatrix[last_id-1] = utils.MakeWorld(positions[last_id-1][0], positions[last_id-1][1], positions[last_id-1][2], 0.0, positions[last_id-1][3], Rx[last_id-1], 0.5);
 
       }
+      symmetry = false;
     }
 
     //Apply the modifications
