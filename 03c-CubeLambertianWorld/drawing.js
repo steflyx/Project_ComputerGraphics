@@ -433,15 +433,15 @@ function main() {
     //Modify the scene's attributes
     if(lastUpdateTime){
       var deltaC = (30 * (currentTime - lastUpdateTime)) / 1000.0;
-      if (last_id != 0 && (rightArrow || leftArrow || upArrow || downArrow || leftRotate || rightRotate)){
+      if (last_id != 0 && (rightArrow || leftArrow || upArrow || downArrow || leftRotate || rightRotate ||symmetry)){
 
         positions[last_id-1][1] += (dy * upArrow) - (dy * downArrow);
         positions[last_id-1][2] += (dz * rightArrow) - (dz * leftArrow);
         positions[last_id-1][3] += (dl * leftRotate) - (dl * rightRotate);
        // Rx[last_id-1] += (180 * symmetry);
-        Rx[last_id-1] %= 360;
+        //Rx[last_id-1] %= 360;
         
-        cubeWorldMatrix[last_id-1] = utils.MakeWorld(positions[last_id-1][0], positions[last_id-1][1], positions[last_id-1][2], 0.0, positions[last_id-1][3], Rx[last_id-1], 0.5);
+        cubeWorldMatrix[last_id-1] = utils.MakeWorld(positions[last_id-1][0], positions[last_id-1][1], positions[last_id-1][2],  Rx[last_id-1], positions[last_id-1][3],0.0, 0.5);
 
       }
 	  /*MODIFIED PART *************************/
@@ -449,7 +449,7 @@ function main() {
       if (last_id != 0 && ((symmetry) || (Rx[last_id-1] % 180 != 0))){
         Rx[last_id-1] = (Rx[last_id-1]+5)%360
         console.log("animate symmetry Rx[last_id]="+Rx[last_id-1])
-        cubeWorldMatrix[last_id-1] = utils.MakeWorld(positions[last_id-1][0], positions[last_id-1][1], positions[last_id-1][2],Rx[last_id-1], 0.0, 0.0, 0.5);
+        cubeWorldMatrix[last_id-1] = utils.MakeWorld(positions[last_id-1][0], positions[last_id-1][1], positions[last_id-1][2],Rx[last_id-1],positions[last_id-1][3], 0.0, 0.5);
       }
       //If the user pressed selected a new piece while the rotation animation, we continue rotating the piece that are in the midlle of a rotation 
       //Without this piece of code, if the user click on a new piece before the end of the symetry animation, the piece stay stuck.
@@ -457,7 +457,7 @@ function main() {
         if ((Rx[i] % 180 != 0)){
         Rx[i] = (Rx[i]+5)%360
         console.log("animate symmetry Rx[last_id]="+Rx[last_id-1])
-        cubeWorldMatrix[i] = utils.MakeWorld(positions[i][0], positions[i][1], positions[i][2],Rx[i], 0.0, 0.0, 0.5);
+        cubeWorldMatrix[i] = utils.MakeWorld(positions[i][0], positions[i][1], positions[i][2],Rx[i], positions[last_id-1][3], 0.0, 0.5);
       }
       }  
 	  /*MODIFIED PART *************************/	  
