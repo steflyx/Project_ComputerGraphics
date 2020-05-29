@@ -457,7 +457,7 @@ function main() {
         if ((Rx[i] % 180 != 0)){
         Rx[i] = (Rx[i]+5)%360
         console.log("animate symmetry Rx[last_id]="+Rx[last_id-1])
-        cubeWorldMatrix[i] = utils.MakeWorld(positions[i][0], positions[i][1], positions[i][2],Rx[i], positions[last_id-1][3], 0.0, 0.5);
+        cubeWorldMatrix[i] = utils.MakeWorld(positions[i][0], positions[i][1], positions[i][2],Rx[i], positions[i][3], 0.0, 0.5);
       }
       }  
 	  /*MODIFIED PART *************************/	  
