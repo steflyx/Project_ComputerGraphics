@@ -102,8 +102,8 @@ function doMouseUp(event) {
 }
 
 function doMouseMove(event) {
-    lastMouseX = event.pageX;
-    lastMouseY = event.pageY;
+    lastMouseX = event.clientX;
+    lastMouseY = event.clientY;
  /*if(mouseState) {
     var dx = event.pageX - lastMouseX;
     var dy = lastMouseY - event.pageY;
@@ -137,6 +137,7 @@ function doMouseWheel(event) {
 //Resizes the canvas
 function doResize() {
     // set canvas dimensions
+    console.log("RESIZE")
   var canvas = document.getElementById("my-canvas");
   if((window.innerWidth > 40) && (window.innerHeight > 220)) {
     canvas.width  = window.innerWidth;
@@ -205,13 +206,50 @@ var keyFunctionDown = function(e) {
 }
 window.addEventListener("keydown", keyFunctionDown, false);
 
-
-function ColorToId(color){
-    tmp_array = [color[0]/255,color[1]/255,color[2]/255,color[3]/255]
-    //console.log(tmp_array == [1.0,0.0,0.0,1.0])
-    id = picking_colors.findIndex(x => x == tmp_array)
-    return id
+/**
+this function create the right initial position vector for each piece of the tangram
+**/
+function worldMatrixParams(pieceIndex){
+    var tmp_matrice = new Array(); 
+    switch (pieceIndex){
+          //big triangle 1
+    case 0:
+        tmp_matrice= [ 0.0, 0.0,-square_size/3-space_between_pieces, 0.0, -90.0, 0.0, 1.0];
+        break;
+    	
+	//big triangle 2
+     case 1:
+        tmp_matrice= [0.0,square_size/3+space_between_pieces, 0.0, 0.0, 0.0, 0.0, 1.0];
+        break;
+	
+	//small triangle 1
+     case 2:
+        tmp_matrice= [0.0,-square_size/4-square_size/6-space_between_pieces, -square_size/4 -space_between_pieces , 0.0, 180, 0.0, 1.0];
+        break;
+	
+	//medium triangle 1
+     case 3:
+        tmp_matrice= [0.0, -square_size/3-space_between_pieces,  square_size/3 +space_between_pieces, 0.0, -45, 0.0,1.0];
+        break;
+    
+	//small triangle 2
+     case 4:
+        tmp_matrice= [0.0, 0.0, square_size/6 +space_between_pieces, 0.0, 90.0, 0.0, 1.0];
+        break;
+								
+	//Square
+     case 5:
+        tmp_matrice= [0.0,  -square_size/4-space_between_pieces, 0.0, 0.0, 0.0, 0.0, 1.0];
+        break;
+				
+	//parallelepiped
+      case 6:
+        tmp_matrice= [0.0,square_size/8 +space_between_pieces, 3*square_size/8 +2*space_between_pieces, 0.0, 90.0, 0.0, 1.0];
+        break;   
+    }   
+    return tmp_matrice;
 }
+
 
 function main() {
 
@@ -222,8 +260,11 @@ function main() {
   var cubeWorldMatrix = new Array(); //Define world matrice for each piece of the tangram
   var cubeMaterialColor = new Array(); //Define material color for each piece
   var piecesIdentifiers= new Array();  //Define an id for each piece
+  //cubeWorldMatrix = placePieces(0.3);
+    
+    
     for (var i=0; i< nb_objects; i++){
-        cubeWorldMatrix[i] = utils.MakeWorld( 2.5, 1.0, 0.5, 0.0, 0.0, 0.0, 0.5);
+        cubeWorldMatrix[i] = utils.MakeWorld( worldMatrixParams(i)[0],worldMatrixParams(i)[1],worldMatrixParams(i)[2],worldMatrixParams(i)[3],worldMatrixParams(i)[4],worldMatrixParams(i)[5],worldMatrixParams(i)[6]);
         cubeMaterialColor[i]= pieceColors[i];
         piecesIdentifiers[i]=[
             ((i+1 & 0x000000FF) >>  0)/255.0,
@@ -233,20 +274,20 @@ function main() {
         ];        
 
     }
-  console.log(piecesIdentifiers);
-
+    
   //Positions for animations purposes
   var positions = new Array();
   for (var i=0; i<nb_objects;i++){
-    positions[i] = [2.5,1.0,0.5,0.0];
+    positions[i] = [worldMatrixParams(i)[0],worldMatrixParams(i)[1],worldMatrixParams(i)[2],worldMatrixParams(i)[4]];
   }
+    console.log(positions)
 
   //Symmetry around x and y
   var Rx = new Array();
   var Ry = new Array();
   for (var i=0; i<nb_objects;i++){
-    Rx[i] = [0.0];
-    Ry[i] = [0.0];
+    Rx[i] = [worldMatrixParams(i)[3]];
+    Ry[i] = [worldMatrixParams(i)[5]];
   }
     
 
@@ -274,7 +315,9 @@ function main() {
   canvas.addEventListener("mouseup", doMouseUp, false);
   canvas.addEventListener("mousemove", doMouseMove, false);
   canvas.addEventListener("mousewheel", doMouseWheel, false);
-  window.onresize = doResize;
+    canvas.width  = window.innerWidth-16;
+	canvas.height = window.innerHeight-180;
+  window.onresize = doResize;  
 
   
   if (!gl) {
@@ -450,7 +493,7 @@ function main() {
        // Rx[last_id-1] += (180 * xsymmetry);
         //Rx[last_id-1] %= 360;
         
-        cubeWorldMatrix[last_id-1] = utils.MakeWorld(positions[last_id-1][0], positions[last_id-1][1], positions[last_id-1][2],  Rx[last_id-1], positions[last_id-1][3], Ry[last_id-1], 0.5);
+        cubeWorldMatrix[last_id-1] = utils.MakeWorld(positions[last_id-1][0], positions[last_id-1][1], positions[last_id-1][2],  Rx[last_id-1], positions[last_id-1][3], Ry[last_id-1], 1.0);
 
       }
 	  /*X SYMMETRY *************************/
@@ -458,7 +501,7 @@ function main() {
       if (last_id != 0 && ((xsymmetry) || (Rx[last_id-1] % 180 != 0))){
         Rx[last_id-1] = (Rx[last_id-1]+5)%360
         console.log("animate xsymmetry Rx[last_id]="+Rx[last_id-1])
-        cubeWorldMatrix[last_id-1] = utils.MakeWorld(positions[last_id-1][0], positions[last_id-1][1], positions[last_id-1][2],Rx[last_id-1],positions[last_id-1][3], Ry[last_id-1], 0.5);
+        cubeWorldMatrix[last_id-1] = utils.MakeWorld(positions[last_id-1][0], positions[last_id-1][1], positions[last_id-1][2],Rx[last_id-1],positions[last_id-1][3], Ry[last_id-1], 1.0);
       }
       //If the user pressed selected a new piece while the rotation animation, we continue rotating the piece that are in the midlle of a rotation 
       //Without this piece of code, if the user click on a new piece before the end of the symetry animation, the piece stay stuck.
@@ -466,7 +509,7 @@ function main() {
         if ((Rx[i] % 180 != 0)){
         Rx[i] = (Rx[i]+5)%360
         console.log("animate xsymmetry Rx[last_id]="+Rx[last_id-1])
-        cubeWorldMatrix[i] = utils.MakeWorld(positions[i][0], positions[i][1], positions[i][2],Rx[i], positions[i][3], Ry[i], 0.5);
+        cubeWorldMatrix[i] = utils.MakeWorld(positions[i][0], positions[i][1], positions[i][2],Rx[i], positions[i][3], Ry[i], 1.0);
         }
       }  
         
@@ -474,7 +517,7 @@ function main() {
      if (last_id != 0 && ((ysymmetry) || (Ry[last_id-1] % 180 != 0))){
         Ry[last_id-1] = (Ry[last_id-1]+5)%360
         console.log("animate xsymmetry Rx[last_id]="+Ry[last_id-1])
-        cubeWorldMatrix[last_id-1] = utils.MakeWorld(positions[last_id-1][0], positions[last_id-1][1], positions[last_id-1][2],Rx[last_id-1],positions[last_id-1][3], Ry[last_id-1], 0.5);
+        cubeWorldMatrix[last_id-1] = utils.MakeWorld(positions[last_id-1][0], positions[last_id-1][1], positions[last_id-1][2],Rx[last_id-1],positions[last_id-1][3], Ry[last_id-1], 1.0);
       }
       //If the user pressed selected a new piece while the rotation animation, we continue rotating the piece that are in the midlle of a rotation 
       //Without this piece of code, if the user click on a new piece before the end of the symetry animation, the piece stay stuck.
@@ -482,7 +525,7 @@ function main() {
         if ((Ry[i] % 180 != 0)){
         Ry[i] = (Ry[i]+5)%360
         console.log("animate xsymmetry Rx[last_id]="+Ry[last_id-1])
-        cubeWorldMatrix[i] = utils.MakeWorld(positions[i][0], positions[i][1], positions[i][2],Rx[i], positions[i][3], Ry[i], 0.5);
+        cubeWorldMatrix[i] = utils.MakeWorld(positions[i][0], positions[i][1], positions[i][2],Rx[i], positions[i][3], Ry[i], 1.0);
         }
       }   
       //xsymmetry = false;
@@ -551,9 +594,8 @@ function main() {
        drawObjects(true)
       
        // ------ Figure out what pixel is under the mouse and read it
-
-    const pixelX = lastMouseX * gl.canvas.width / gl.canvas.clientWidth;
-    const pixelY = gl.canvas.height - lastMouseY * gl.canvas.height / gl.canvas.clientHeight - 1;
+    const pixelX = lastMouseX * gl.canvas.width / gl.canvas.clientWidth ;
+    const pixelY = gl.canvas.height - (lastMouseY) * gl.canvas.height / gl.canvas.clientHeight - 1;
     const data = new Uint8Array(4);
     gl.readPixels(
         pixelX,            // x
