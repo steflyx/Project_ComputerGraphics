@@ -11,7 +11,7 @@ var nb_triangles = 5;
 var nb_parallepipedes = 2 ;
 var nb_objects = nb_parallepipedes+nb_triangles;
 
-
+var canvas_container = document.getElementById("div-canvas");
 var canvas = document.getElementById("my-canvas");
 var gl = canvas.getContext("webgl2");
 
@@ -140,8 +140,8 @@ function doResize() {
     console.log("RESIZE")
   var canvas = document.getElementById("my-canvas");
   if((window.innerWidth > 40) && (window.innerHeight > 220)) {
-    canvas.width  = window.innerWidth;
-    canvas.height = window.innerHeight;
+    canvas.width  = canvas_container.innerWidth;
+    canvas.height = canvas_container.innerHeight;
     gl.viewport(0.0, 0.0, canvas.width, canvas.height);
   }
 }
@@ -315,8 +315,8 @@ function main() {
   canvas.addEventListener("mouseup", doMouseUp, false);
   canvas.addEventListener("mousemove", doMouseMove, false);
   canvas.addEventListener("mousewheel", doMouseWheel, false);
-    canvas.width  = window.innerWidth-16;
-	canvas.height = window.innerHeight-180;
+  canvas.width  = canvas_container.innerWidth-16;
+  canvas.height = canvas_container.innerHeight-180;
   window.onresize = doResize;  
 
   
