@@ -86,6 +86,9 @@ function isParallepipedWellRotated(userMatrice, solutionMatrice,rotation_toleran
     if (equalAngleWithTolerance(rotation_tolerance, userMatrice[4], solutionMatrice[4])){
         valid_rotation=true;
     } 
+     if (equalAngleWithTolerance(rotation_tolerance, userMatrice[4]-180, solutionMatrice[4])){
+        valid_rotation=true;
+    } 
     console.log("isParallepipedWellRotated : "+(valid_rotation && valid_symetry ))
     return(valid_rotation && valid_symetry);   
 }
