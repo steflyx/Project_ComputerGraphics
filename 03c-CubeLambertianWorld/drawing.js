@@ -139,13 +139,8 @@ function doMouseWheel(event) {
 //Resizes the canvas
 function doResize() {
     // set canvas dimensions
-    console.log("RESIZE")
-  var canvas = document.getElementById("my-canvas");
-  if((window.innerWidth > 40) && (window.innerHeight > 220)) {
-    canvas.width  = canvas_container.innerWidth;
-    canvas.height = canvas_container.innerHeight;
-    gl.viewport(0.0, 0.0, canvas.width, canvas.height);
-  }
+  utils.resizeCanvasToDisplaySize(gl.canvas);
+  gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
 }
 
 
