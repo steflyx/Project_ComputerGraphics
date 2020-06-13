@@ -15,6 +15,8 @@ var canvas_container = document.getElementById("div-canvas");
 var canvas = document.getElementById("my-canvas");
 var gl = canvas.getContext("webgl2");
 
+var imageIndex=0;
+var imagesTasks=["Images/catTangram.PNG","Images/birdTangram.PNG","Images/fishTangram.PNG","Images/rabbitTangram.PNG"]
 
 //VERTEX SHADER
 var vs = `#version 300 es
@@ -146,10 +148,18 @@ function doResize() {
   }
 }
 
+
+
 //Changes shape
 var keyFunctionUp =function(e) {
   if (e.keyCode == 32) {  // Space
-    window.alert("Change shape!");
+      imageIndex=(imageIndex+1)%4;
+      document.getElementById("img-task").src=imagesTasks[imageIndex];
+  } 
+  if (e.keyCode == 13) {  // Enter
+     console.log("enter");
+      window.alert(checkForm())
+      console.log(checkForm());
   } 
   if (e.keyCode == 39) {
     rightArrow = false;
@@ -245,8 +255,9 @@ function worldMatrixParams(pieceIndex){
 	//parallelepiped
       case 6:
         tmp_matrice= [0.0,square_size/8 +space_between_pieces, 3*square_size/8 +2*space_between_pieces, 0.0, 90.0, 0.0, 1.0];
+           
         break;   
-    }   
+    }
     return tmp_matrice;
 }
 
@@ -276,15 +287,15 @@ function main() {
     }
     
   //Positions for animations purposes
-  var positions = new Array();
+   positions = new Array();
   for (var i=0; i<nb_objects;i++){
     positions[i] = [worldMatrixParams(i)[0],worldMatrixParams(i)[1],worldMatrixParams(i)[2],worldMatrixParams(i)[4]];
   }
     console.log(positions)
 
   //Symmetry around x and y
-  var Rx = new Array();
-  var Ry = new Array();
+   Rx = new Array();
+   Ry = new Array();
   for (var i=0; i<nb_objects;i++){
     Rx[i] = [worldMatrixParams(i)[3]];
     Ry[i] = [worldMatrixParams(i)[5]];
@@ -477,9 +488,9 @@ function main() {
   function animate(){
     var currentTime = (new Date).getTime();
 
-    dx = 0.1;
-    dy = 0.1;
-    dz = 0.1;
+    dx = 0.05;
+    dy = 0.05;
+    dz = 0.05;
     dl = 1.0;
 
     //Modify the scene's attributes

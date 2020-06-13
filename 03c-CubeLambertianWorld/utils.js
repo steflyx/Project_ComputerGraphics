@@ -574,6 +574,10 @@ createProgram:function(gl, vertexShader, fragmentShader) {
 		perspective[15] = 0.0;	
 
 		return perspective;
-	}
+	},
+    
+    mod: function(n, m) {
+        return ((n % m) + m) % m;
+    }
 
 }
