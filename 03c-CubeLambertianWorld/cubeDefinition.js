@@ -500,5 +500,11 @@ var pieceColors = [
 ]
 
 var selectedColors =[
-    [10.0,1.0,1.0] //white
+    [10.0,0.7,0.7], //Red
+	[7.0,1.0,0.7],  //Green
+	[6.0,0.6,1.0],  //Blue
+	[10.0,1.0,0.8], //Yellow
+	[10.0,0.7,1.0], //Magenta
+	[7.0,0.95,1.0], //Light blue
+	[10.0,0.9,0.7]  //Orange
 ]

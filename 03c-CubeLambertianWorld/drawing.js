@@ -388,7 +388,7 @@ function main() {
                 var nb_indices_triangle=24;
                 for (var i=0;i< nb_triangles;i++){
                     if (i==last_id-1){
-                        cubeMaterialColor[i]=selectedColors[0]
+                        cubeMaterialColor[i]=selectedColors[i]
                     }
                     else {
                          cubeMaterialColor[i]=pieceColors[i]
@@ -411,7 +411,7 @@ function main() {
                 var nb_indices_parall=36;
                 for (var i=0; i < nb_parallepipedes;i++){
                     if (i+nb_triangles==last_id-1){
-                     cubeMaterialColor[i+nb_triangles]=selectedColors[0]
+                     cubeMaterialColor[i+nb_triangles]=selectedColors[i+nb_triangles]
                     }
                     else {
                       cubeMaterialColor[i+nb_triangles]=pieceColors[i+nb_triangles]
