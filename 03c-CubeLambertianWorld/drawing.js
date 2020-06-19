@@ -186,11 +186,17 @@ var keyFunctionUp =function(e) {
   if (e.keyCode == 32) {  // Space
       imageIndex=(imageIndex+1)%6;
        change_Task=true;
+       var text = document.getElementsByClassName("word-container")[0];
+       text.style.zIndex = "-1";
+     
   } 
   if (e.keyCode == 13) {  // Enter
      console.log("enter");
-      window.alert(checkForm())
-      console.log(checkForm());
+     if(checkForm()){
+       console.log("True");
+       var text = document.getElementsByClassName("word-container")[0];
+       text.style.zIndex = "1000";
+     }
   } 
   if (e.keyCode == 8) {  //Delete
     console.log("Del");
