@@ -97,6 +97,7 @@ var last_id = 0;
 var xsymmetry = false;
 var ysymmetry = false;
 var moveTask =false;
+var giveUp = false;
 
 
 //When you click on a piece, that piece is selected and can be moved
@@ -166,13 +167,17 @@ function doResize() {
 //Changes shape
 var keyFunctionUp =function(e) {
   if (e.keyCode == 32) {  // Space
-      imageIndex=(imageIndex+1)%5;
+      imageIndex=(imageIndex+1)%6;
   } 
   if (e.keyCode == 13) {  // Enter
      console.log("enter");
       window.alert(checkForm())
       console.log(checkForm());
   } 
+  if (e.keyCode == 8) {  //Delete
+    console.log("Del");
+    giveUp = true;
+  }
   if (e.keyCode == 39) {
     rightArrow = false;
   }
@@ -603,7 +608,7 @@ function main() {
     dl = 1.0;
 
     //Modify the scene's attributes
-    if(lastUpdateTime){
+    if(lastUpdateTime && !giveUp){
       var deltaC = (30 * (currentTime - lastUpdateTime)) / 1000.0;
       if (last_id != 0 && (rightArrow || leftArrow || upArrow || downArrow || leftRotate || rightRotate ||xsymmetry)){
 
@@ -649,6 +654,16 @@ function main() {
         }
       }   
       //xsymmetry = false;
+    }
+    if (giveUp){
+
+      console.log("give up");
+      for (var i = 0; i < nb_objects; i++) {
+        var solution_values = solutions[imageIndex][0][i];
+        cubeWorldMatrix[i] = utils.MakeWorld(solution_values[0], solution_values[1], solution_values[2], solution_values[3], solution_values[4], solution_values[5], solution_values[6]);
+      };
+
+      giveUp = false;
     }
 
     //Apply the modifications
