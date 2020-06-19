@@ -134,6 +134,22 @@ function doMouseMove(event) {
     }
 }
 
+function doMouseMoveTask(event){
+  if (mouseState && moveTask){
+    console.log("doMouseMove");
+    var dx = event.pageX - lastMouseX;
+    var dy = lastMouseY - event.pageY;
+    lastMouseX = event.pageX;
+    lastMouseY = event.pageY;
+
+    if((dx != 0) || (dy != 0)) {
+      angle_task = angle_task + 0.5 * dx;
+      elevation_task = elevation_task + 0.5 * dy;
+    }
+
+  }
+}
+
 //Zoom in when mouse wheel is used
 function doMouseWheel(event) {
  if (!moveTask){
@@ -351,10 +367,11 @@ function main() {
   //GL
   //Retrieve canvas and GL
   //Add events listener
-  canvas.addEventListener("mousedown", doMouseDown, false);
-  canvas.addEventListener("mouseup", doMouseUp, false);
+  window.addEventListener("mousedown", doMouseDown, false);
+  window.addEventListener("mouseup", doMouseUp, false);
   canvas.addEventListener("mousemove", doMouseMove, false);
-  canvas.addEventListener("mousewheel", doMouseWheel, false);
+  window.addEventListener("mousemove", doMouseMoveTask, false);
+  window.addEventListener("mousewheel", doMouseWheel, false);
   canvas.width  = canvas_container.innerWidth-16;
   canvas.height = canvas_container.innerHeight-180;
   window.onresize = doResize;  
