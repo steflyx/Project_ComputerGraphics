@@ -98,6 +98,7 @@ var xsymmetry = false;
 var ysymmetry = false;
 var moveTask =false;
 var giveUp = false;
+var change_Task=false;
 
 
 //When you click on a piece, that piece is selected and can be moved
@@ -174,7 +175,7 @@ function doResize() {
   gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
 
     //set task dimensions
-    utils.resizeCanvasToDisplaySize(gl_task.canvas);
+  utils.resizeCanvasToDisplaySize(gl_task.canvas);
   gl_task.viewport(0, 0, gl_task.canvas.width, gl_task.canvas.height);
 }
 
@@ -184,6 +185,7 @@ function doResize() {
 var keyFunctionUp =function(e) {
   if (e.keyCode == 32) {  // Space
       imageIndex=(imageIndex+1)%6;
+       change_Task=true;
   } 
   if (e.keyCode == 13) {  // Enter
      console.log("enter");
@@ -326,17 +328,15 @@ function main() {
             ((i+1 & 0x0000FF00) >>  8)/255.0,
             ((i+1 & 0x00FF0000) >> 16)/255.0,
             1.0,
-        ];        
-
+        ];  
     }
-    
-    
+
+
   //Positions for animations purposes
    positions = new Array();
   for (var i=0; i<nb_objects;i++){
     positions[i] = [worldMatrixParams(i)[0],worldMatrixParams(i)[1],worldMatrixParams(i)[2],worldMatrixParams(i)[4]];
   }
-    console.log(positions)
 
   //Symmetry around x and y
    Rx = new Array();
@@ -625,7 +625,7 @@ function main() {
     dl = 1.0;
 
     //Modify the scene's attributes
-    if(lastUpdateTime && !giveUp){
+    if(lastUpdateTime && !giveUp && !change_Task){
       var deltaC = (30 * (currentTime - lastUpdateTime)) / 1000.0;
       if (last_id != 0 && (rightArrow || leftArrow || upArrow || downArrow || leftRotate || rightRotate ||xsymmetry)){
 
@@ -678,9 +678,26 @@ function main() {
       for (var i = 0; i < nb_objects; i++) {
         var solution_values = solutions[imageIndex][0][i];
         cubeWorldMatrix[i] = utils.MakeWorld(solution_values[0], solution_values[1], solution_values[2], solution_values[3], solution_values[4], solution_values[5], solution_values[6]);
+          
+        positions[i] = [solution_values[0],solution_values[1],solution_values[2],solution_values[4]];
+            
+        Rx[i] = [solution_values[3]];
+        Ry[i] = [solution_values[5]];
       };
 
       giveUp = false;
+    }
+      console.log(change_Task)
+    if (change_Task){
+        for (var i = 0; i < nb_objects; i++) {      
+            cubeWorldMatrix[i] =utils.MakeWorld( worldMatrixParams(i)[0],worldMatrixParams(i)[1],worldMatrixParams(i)[2],worldMatrixParams(i)[3],worldMatrixParams(i)[4],worldMatrixParams(i)[5],worldMatrixParams(i)[6]);
+            
+             positions[i] = [worldMatrixParams(i)[0],worldMatrixParams(i)[1],worldMatrixParams(i)[2],worldMatrixParams(i)[4]];
+            
+             Rx[i] = [worldMatrixParams(i)[3]];
+            Ry[i] = [worldMatrixParams(i)[5]];
+        };
+        change_Task = false;       
     }
 
     //Apply the modifications
