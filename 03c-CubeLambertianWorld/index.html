@@ -20,7 +20,15 @@
         position: relative;
         background: linear-gradient(-135deg, #42c2f5, #000);
         z-index: 1;
-        width: 80vw;
+        width: 100%;
+        overflow: hidden;
+      }
+        #my-canvas_task {
+        margin: 2%;
+        position: relative;
+        background: linear-gradient(-135deg, #D9E3F0, #81E7B4);
+        z-index: 1;
+        width: 96%;
         overflow: hidden;
       }
       #div-center{
@@ -28,19 +36,23 @@
         width: 100vw;
       }
       #div-canvas{
-        width:80vw;
-
-
+        width:75vw;
         float: left;
       }
       #div-task{
-        width: 19.9vw;
+        width: 100%;   
+      }
+     #div-task-container{
+        width: 24.9vw;
         height: 80vh;
         float: right;
-        background-color: #a8c5d9;       
+        background-color:  #a8c5d9;   
       }
-      #img-task{
-        width: 100%;
+     #div-task-container p{
+        text-align: center;
+      }
+    #div-task-container h2{
+        text-align: center;
       }
       #div-gui{
         width: 96%;
@@ -50,7 +62,7 @@
         border-top: solid 0.1vh black;
       }
       .div-commands{
-        width: 16%;
+        width: 14%;
         height: 19.8vh;
         margin: 0;
         float: left;
@@ -88,10 +100,16 @@
     <div id="div-canvas">
       <canvas id="my-canvas"></canvas>
     </div>
-    <div id="div-task">
-      <img id="img-task" src="Images/catTangram.PNG">
+      
+    <div id="div-task-container">
+        <h2>Reproduce this figure !</h2>
+        <div id="div-task">
+            <canvas id="my-canvas_task"></canvas>
+        </div>
+        <p>Press <b>shift</b> and do a <b> mouse press </b> then  <b> mouse move </b> to rotate the figure</p>
     </div>
   </div>
+    
   <div id="div-gui">
     <div class="div-commands" id="div-commands-first">
       <p><b>Click</b> on an object to select it!</p>
@@ -113,7 +131,7 @@
       </div>
     </div>
     <div class="div-commands">
-      <p>Use <b>Spacebar</b> to change image!</p>
+      <p>Use <b>Spacebar</b> to change task!</p>
       <img class="img-commands" src="Images/Spacebar.gif">
     </div>
     <div class="div-commands">
@@ -121,15 +139,20 @@
       <img class="img-commands" src="Images/Arrow.gif">
     </div>
     <div class="div-commands">
-      <p>Use <b>Enter</b> if you can't solve it!</p>
+      <p>Use <b>Enter</b> to check your answer!</p>
       <img class="img-commands" src="Images/Enter.gif">
+    </div>
+      <div class="div-commands">
+      <p>Use <b>Del</b> if you can't solve it!</p>
+      <img class="img-commands" src="Images/del.gif">
     </div>
   </div>
   <script type="text/javascript" src="utils.js"></script>
   <script type="text/javascript" src="cubeDefinition.js"></script>
-  <script type="text/javascript" src="drawing.js"></script>
   <script type="text/javascript" src="checkingValidity.js"></script>
   <script type="text/javascript" src="solutionsDefinition.js"></script>
+  <script type="text/javascript" src="drawing.js"></script>
+
     
     
 </body>
