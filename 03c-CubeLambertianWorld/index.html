@@ -145,6 +145,32 @@
         }
       }
 
+    .alert {
+      padding: 20px;
+      background-color: #f44336;
+      color: white;
+      position: absolute;
+      top: 0;
+      left:20%;
+      z-index: 1000;
+    }
+
+    .closebtn {
+      margin-left: 15px;
+      color: white;
+      font-weight: bold;
+      float: right;
+      font-size: 22px;
+      line-height: 20px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .closebtn:hover {
+      color: black;
+    }
+    
+
     </style>
 
 </head>
@@ -213,8 +239,12 @@
     
   
   <span class="word-container" data-word="YOUWIN!" data-word-repeat="4"
-    data-text-colors="#ffff00,#00bfff,#ff00ff,#ffbf00"></span>
+    data-text-colors="#FCA400,#0046DB,#FD0000,#FEFCFE"></span>
 
+  <div class="alert">
+  <span class="closebtn" onclick="this.parentElement.style.zIndex='-1';">&times;</span> 
+  <strong>Danger!</strong> Indicates a dangerous or potentially negative action.
+</div>
 
   
 <script type="text/javascript">
