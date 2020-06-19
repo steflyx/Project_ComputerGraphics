@@ -258,55 +258,6 @@ function buildParallelepipedeIndices(indicesList,startVertice){
 		indicesList[j++]=startVertice+11+4*k;
 	}	
 }
-/*
-function buildVertices(){
-	vert=[]
-	//big triangle 1
-	buildTriangleVertices(vert, [0.0,0.0,0.0] , [0.0,square_size/2,square_size/2] , [0.0,square_size,0.0], width)
-		
-	//big triangle 2
-	buildTriangleVertices(vert, [0.0,  square_size  + space_between_pieces,   0.0 + space_between_pieces/2] , 
-								[0.0,  square_size/2 + space_between_pieces,  square_size/2 + space_between_pieces/2] ,
-								[0.0,  square_size + space_between_pieces,    square_size + space_between_pieces/2], 
-								width)
-	
-	//small triangle 1
-	buildTriangleVertices(vert,	[0.0,   0.0 -space_between_pieces,             0.0] , 
-								[0.0,   -space_between_pieces,                 square_size/2] , 
-								[0.0,   square_size/4-space_between_pieces,    square_size/4],
-								width)
-	
-	//medium triangle 1
-	buildTriangleVertices(vert,	[0.0,   0.0 -space_between_pieces,             square_size/2+space_between_pieces] , 
-								[0.0,   -space_between_pieces,                 square_size+space_between_pieces] , 
-								[0.0,   square_size/2-space_between_pieces,    square_size+space_between_pieces],
-								width)
-
-	//small triangle 2
-	buildTriangleVertices(vert,	[0.0,   square_size/2,             square_size/2+space_between_pieces/2] , 
-								[0.0,   square_size/4,             3*square_size/4+space_between_pieces/2] , 
-								[0.0,   3*square_size/4,           3*square_size/4+space_between_pieces/2],
-								width)
-								
-	//Square
-	buildParallelepipedeVertices(vert,	
-								[0.0,   0-space_between_pieces/2,       		   square_size/2+space_between_pieces/2] , 
-								[0.0,   square_size/4-space_between_pieces/2,      3*square_size/4+space_between_pieces/2] , 
-								[0.0,   square_size/2-space_between_pieces/2,      square_size/2+space_between_pieces/2],
-								[0.0,   square_size/4-space_between_pieces/2,      square_size/4+space_between_pieces/2],
-								width)
-							
-	
-	//parallelepiped
-	buildParallelepipedeVertices(vert,	
-								[0.0,   square_size/4,        3*square_size/4 +space_between_pieces] , 
-								[0.0,   square_size/2,        square_size +space_between_pieces] , 
-								[0.0,   square_size,          square_size +space_between_pieces],
-								[0.0,   3*square_size/4,      3*square_size/4+space_between_pieces],
-								width)
-	return vert
-
-}*/
 
 function buildVertices(){
 	vert=[]
@@ -359,54 +310,7 @@ function buildVertices(){
 
 	return vert;
 }
-/*
-function buildNorms(){
-	norm=[]
-	//big triangle 1	
-	buildTriangleNorms(norm, [0.0,0.0,0.0] , [0.0,square_size/2,square_size/2] , [0.0,square_size,0.0])
-	
-	//big triangle 2
-	buildTriangleNorms(norm, [0.0,  square_size  + space_between_pieces,   0.0 + space_between_pieces/2] , 
-								[0.0,  square_size/2 + space_between_pieces,  square_size/2 + space_between_pieces/2] ,
-								[0.0,  square_size + space_between_pieces,    square_size + space_between_pieces/2], 
-								)
-	
-	//small triangle 1
-	buildTriangleNorms(norm,	[0.0,   0.0 -space_between_pieces,             0.0] , 
-								[0.0,   -space_between_pieces,                 square_size/2] , 
-								[0.0,   square_size/4-space_between_pieces,    square_size/4],
-								)
-	
-	//medium triangle 1
-	buildTriangleNorms(norm,	[0.0,   0.0 -space_between_pieces,             square_size/2+space_between_pieces] , 
-								[0.0,   -space_between_pieces,                 square_size+space_between_pieces] , 
-								[0.0,   square_size/2-space_between_pieces,    square_size+space_between_pieces],
-								)
-	
-	//small triangle 2
-	buildTriangleNorms(norm,	[0.0,   square_size/2,             square_size/2+space_between_pieces/2] , 
-								[0.0,   square_size/4,             3*square_size/4+space_between_pieces/2] , 
-								[0.0,   3*square_size/4,           3*square_size/4+space_between_pieces/2],
-								)
-	
-	//Square
-	buildParallelepipedeNorms(norm,	
-								[0.0,   0-space_between_pieces/2,       		   square_size/2+space_between_pieces/2] , 
-								[0.0,   square_size/4-space_between_pieces/2,      3*square_size/4+space_between_pieces/2] , 
-								[0.0,   square_size/2-space_between_pieces/2,      square_size/2+space_between_pieces/2],
-								[0.0,   square_size/4-space_between_pieces/2,      square_size/4+space_between_pieces/2],
-								)							
-	
-	//parallelepiped
-	buildParallelepipedeNorms(norm,	
-								[0.0,   square_size/4,        3*square_size/4 +space_between_pieces] , 
-								[0.0,   square_size/2,        square_size +space_between_pieces] , 
-								[0.0,   square_size,          square_size +space_between_pieces],
-								[0.0,   3*square_size/4,      3*square_size/4+space_between_pieces],
-								)
-	return norm
 
-}*/
 
 function buildNorms(){
 	norm=[]
@@ -507,4 +411,8 @@ var selectedColors =[
 	[10.0,0.7,1.0], //Magenta
 	[7.0,0.95,1.0], //Light blue
 	[10.0,0.9,0.7]  //Orange
+]
+
+var TaskColors =[
+    [5.0,0.5,0.5], //Grey
 ]

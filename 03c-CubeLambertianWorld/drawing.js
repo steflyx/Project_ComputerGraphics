@@ -6,6 +6,12 @@ var elevation = 0.0;
 var angle = 90.0;
 var lookRadius = 10.0;
 
+
+//Parameter for Camera for the task 
+var angle_task = 90.0;
+var lookRadius_task = 7.0;
+var elevation_task = 0.0;
+
 //parameters of pieces of the tangram
 var nb_triangles = 5;
 var nb_parallepipedes = 2 ;
@@ -15,8 +21,11 @@ var canvas_container = document.getElementById("div-canvas");
 var canvas = document.getElementById("my-canvas");
 var gl = canvas.getContext("webgl2");
 
+var canvas_container_task = document.getElementById("div-task");
+var canvas_task = document.getElementById("my-canvas_task");
+var gl_task = canvas_task.getContext("webgl2");
+
 var imageIndex=0;
-var imagesTasks=["Images/catTangram.PNG","Images/birdTangram.PNG","Images/fishTangram.PNG","Images/rabbitTangram.PNG"]
 
 //VERTEX SHADER
 var vs = `#version 300 es
@@ -87,7 +96,7 @@ var rightRotate = false;
 var last_id = 0;
 var xsymmetry = false;
 var ysymmetry = false;
-
+var moveTask =false;
 
 
 //When you click on a piece, that piece is selected and can be moved
@@ -104,36 +113,41 @@ function doMouseUp(event) {
 }
 
 function doMouseMove(event) {
-    lastMouseX = event.clientX;
-    lastMouseY = event.clientY;
- /*if(mouseState) {
-    var dx = event.pageX - lastMouseX;
-    var dy = lastMouseY - event.pageY;
-    lastMouseX = event.pageX;
-    lastMouseY = event.pageY;
-    
-    //Only allow a partial rotation
-    if((dx != 0) || (dy != 0)) {
-      newAngle = angle + 0.5 * dx;
-      if(newAngle >= -135.0 && newAngle <= -45.0){
-        angle = newAngle;
-      }
-      newElevation = elevation + 0.5 * dy;
-      if(newElevation <= 0.0 && newElevation >= -90.0){
-        elevation = newElevation;
-      }
+    if (!moveTask){
+        lastMouseX = event.clientX;
+        lastMouseY = event.clientY;  
     }
-  }*/
- 
-    
+    else {
+        if(mouseState) {
+            console.log("doMouseMove");
+            var dx = event.pageX - lastMouseX;
+            var dy = lastMouseY - event.pageY;
+            lastMouseX = event.pageX;
+            lastMouseY = event.pageY;
+
+            if((dx != 0) || (dy != 0)) {
+                angle_task = angle_task + 0.5 * dx;
+                elevation_task = elevation_task + 0.5 * dy;
+            }
+	   }
+    }
 }
 
 //Zoom in when mouse wheel is used
 function doMouseWheel(event) {
-  var nLookRadius = lookRadius + event.wheelDelta/200.0;
-  if((nLookRadius > 2.0) && (nLookRadius < 100.0)) {
-    lookRadius = nLookRadius;
-  }
+ if (!moveTask){
+     var nLookRadius = lookRadius + event.wheelDelta/200.0;
+     if((nLookRadius > 2.0) && (nLookRadius < 100.0)) {
+        lookRadius = nLookRadius;
+    }
+ }
+    else {
+     var nLookRadius_task = lookRadius_task + event.wheelDelta/200.0;
+     if((nLookRadius_task > 2.0) && (nLookRadius_task < 100.0)) {
+        lookRadius_task = nLookRadius_task
+    }
+ }
+ 
 }
 
 //Resizes the canvas
@@ -141,6 +155,10 @@ function doResize() {
     // set canvas dimensions
   utils.resizeCanvasToDisplaySize(gl.canvas);
   gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
+
+    //set task dimensions
+    utils.resizeCanvasToDisplaySize(gl_task.canvas);
+  gl_task.viewport(0, 0, gl_task.canvas.width, gl_task.canvas.height);
 }
 
 
@@ -148,8 +166,7 @@ function doResize() {
 //Changes shape
 var keyFunctionUp =function(e) {
   if (e.keyCode == 32) {  // Space
-      imageIndex=(imageIndex+1)%4;
-      document.getElementById("img-task").src=imagesTasks[imageIndex];
+      imageIndex=(imageIndex+1)%5;
   } 
   if (e.keyCode == 13) {  // Enter
      console.log("enter");
@@ -180,6 +197,11 @@ var keyFunctionUp =function(e) {
   if (e.keyCode == 82){//r
     ysymmetry = false;
   }
+  if (e.keyCode == 16){//SHIFT
+    moveTask = false;
+    angle_task = 90;
+	elevation_task = 0;
+  }
 }
 window.addEventListener("keyup", keyFunctionUp, false);
 
@@ -207,6 +229,9 @@ var keyFunctionDown = function(e) {
   }
   if (e.keyCode == 82){//r
     ysymmetry = true;
+  }
+    if (e.keyCode == 16){//SHIFT
+    moveTask = true;
   }
 }
 window.addEventListener("keydown", keyFunctionDown, false);
@@ -266,9 +291,12 @@ function main() {
   var cubeWorldMatrix = new Array(); //Define world matrice for each piece of the tangram
   var cubeMaterialColor = new Array(); //Define material color for each piece
   var piecesIdentifiers= new Array();  //Define an id for each piece
-  //cubeWorldMatrix = placePieces(0.3);
     
+  /***FOR THE TASK ***/
+  var taskWorldMatrix = new Array(); //Define world matrice for each piece of the tangram
+  var taskMaterialColor = new Array(); //Define material color for each piece
     
+
     for (var i=0; i< nb_objects; i++){
         cubeWorldMatrix[i] = utils.MakeWorld( worldMatrixParams(i)[0],worldMatrixParams(i)[1],worldMatrixParams(i)[2],worldMatrixParams(i)[3],worldMatrixParams(i)[4],worldMatrixParams(i)[5],worldMatrixParams(i)[6]);
         cubeMaterialColor[i]= pieceColors[i];
@@ -280,6 +308,7 @@ function main() {
         ];        
 
     }
+    
     
   //Positions for animations purposes
    positions = new Array();
@@ -295,7 +324,7 @@ function main() {
     Rx[i] = [worldMatrixParams(i)[3]];
     Ry[i] = [worldMatrixParams(i)[5]];
   }
-    
+
 
   //define directional light
   var dirLightAlpha = -utils.degToRad(9);
@@ -332,10 +361,15 @@ function main() {
   }
   utils.resizeCanvasToDisplaySize(gl.canvas);
   gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
-  //gl.clearColor(0.85, 0.85, 0.85, 1.0);
   gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-  gl.enable(gl.DEPTH_TEST);
+  gl.enable(gl.DEPTH_TEST)
 
+  utils.resizeCanvasToDisplaySize(gl_task.canvas);
+  gl_task.viewport(0, 0, gl_task.canvas.width, gl_task.canvas.height);
+  gl_task.clear(gl_task.COLOR_BUFFER_BIT | gl_task.DEPTH_BUFFER_BIT);
+  gl_task.enable(gl_task.DEPTH_TEST);
+ 
+    
   // 3d program definition  ******************************************
   var vertexShader = utils.createShader(gl, gl.VERTEX_SHADER, vs);
   var fragmentShader = utils.createShader(gl, gl.FRAGMENT_SHADER, fs);
@@ -359,6 +393,21 @@ function main() {
   var Piking_matrixLocation = gl.getUniformLocation(program_Picking, "matrix");
   var Piking_colorLocation = gl.getUniformLocation(program_Picking, "u_id");
   //******************************************************************
+    
+    
+  // FOR THE TASK PROGRAM  ******************************************
+  var vertexShader_task = utils.createShader(gl_task, gl_task.VERTEX_SHADER, vs);
+  var fragmentShader_task = utils.createShader(gl_task, gl_task.FRAGMENT_SHADER, fs);
+  var program_task = utils.createProgram(gl_task, vertexShader_task, fragmentShader_task);
+    
+  var positionAttributeLocation_task = gl_task.getAttribLocation(program_task, "inPosition");  
+  var normalAttributeLocation_task = gl_task.getAttribLocation(program_task, "inNormal");  
+  var matrixLocation_task = gl_task.getUniformLocation(program_task, "matrix");
+  var materialDiffColorHandle_task = gl_task.getUniformLocation(program_task, 'mDiffColor');
+  var lightDirectionHandle_task = gl_task.getUniformLocation(program_task, 'lightDirection');
+  var lightColorHandle_task = gl_task.getUniformLocation(program_task, 'lightColor');
+  var normalMatrixPositionHandle_task = gl_task.getUniformLocation(program_task, 'nMatrix');  
+  //  ***************************************************************
   
   //gl.useProgram(program);
    
@@ -468,12 +517,77 @@ function main() {
        }
   }  
     
+    function drawTask() {
+         for (var i=0; i< nb_objects; i++){
+            taskWorldMatrix[i] = utils.MakeWorld(solutions[imageIndex][0][i][0], solutions[imageIndex][0][i][1],  solutions[imageIndex][0][i][2],  solutions[imageIndex][0][i][3],  solutions[imageIndex][0][i][4],  solutions[imageIndex][0][i][5],  solutions[imageIndex][0][i][6]);
+            taskMaterialColor[i]= TaskColors[0];      
+            }
+
+            gl_task.bindVertexArray(vao_task);
+              var positionBuffer = gl_task.createBuffer();
+              gl_task.bindBuffer(gl_task.ARRAY_BUFFER, positionBuffer);
+              gl_task.bufferData(gl_task.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
+              gl_task.enableVertexAttribArray(positionAttributeLocation_task);
+              gl_task.vertexAttribPointer(positionAttributeLocation_task, 3, gl.FLOAT, false, 0, 0);
+
+              var normalBuffer = gl_task.createBuffer();
+              gl_task.bindBuffer(gl_task.ARRAY_BUFFER, normalBuffer);
+              gl_task.bufferData(gl_task.ARRAY_BUFFER, new Float32Array(normals), gl.STATIC_DRAW);
+              gl_task.enableVertexAttribArray(normalAttributeLocation_task);
+              gl_task.vertexAttribPointer(normalAttributeLocation_task, 3, gl.FLOAT, false, 0, 0);
+
+              var indexBuffer = gl_task.createBuffer();
+              gl_task.bindBuffer(gl_task.ELEMENT_ARRAY_BUFFER, indexBuffer);
+              gl_task.bufferData(gl_task.ELEMENT_ARRAY_BUFFER, new Uint16Array(indices), gl.STATIC_DRAW); 
+           
+              gl_task.useProgram(program_task);
+           
+               //For each piece
+                var nb_indices_triangle=24;
+                for (var i=0;i< nb_triangles;i++){
+                    var worldViewMatrix = utils.multiplyMatrices(viewMatrix_task, taskWorldMatrix[i]);
+                    var projectionMatrix = utils.multiplyMatrices( perspectiveMatrix_task, worldViewMatrix);
+                    gl_task.uniformMatrix4fv(matrixLocation_task, gl.FALSE, utils.transposeMatrix(projectionMatrix));
+
+                    var cubeNormalMatrix = utils.invertMatrix(utils.transposeMatrix(worldViewMatrix));
+                    gl_task.uniformMatrix4fv(normalMatrixPositionHandle_task, gl.FALSE, utils.transposeMatrix(cubeNormalMatrix));
+
+                    gl_task.uniform3fv(materialDiffColorHandle_task, taskMaterialColor[i]);
+                    gl_task.uniform3fv(lightColorHandle_task,  directionalLightColor);
+                    gl_task.uniform3fv(lightDirectionHandle_task,  directionalLight);
+
+                    gl_task.bindVertexArray(vao_task);
+                    gl_task.drawElements(gl.TRIANGLES,nb_indices_triangle, gl.UNSIGNED_SHORT, i*2*nb_indices_triangle);
+                }
+
+                var nb_indices_parall=36;
+                for (var i=0; i < nb_parallepipedes;i++){
+                    var worldViewMatrix = utils.multiplyMatrices(viewMatrix_task, taskWorldMatrix[i+nb_triangles]);
+                    var projectionMatrix = utils.multiplyMatrices( perspectiveMatrix_task, worldViewMatrix);
+                    gl_task.uniformMatrix4fv(matrixLocation_task, gl.FALSE, utils.transposeMatrix(projectionMatrix));
+
+                    var cubeNormalMatrix = utils.invertMatrix(utils.transposeMatrix(worldViewMatrix));
+                     gl_task.uniformMatrix4fv(normalMatrixPositionHandle_task, gl.FALSE, utils.transposeMatrix(cubeNormalMatrix));
+
+                    gl_task.uniform3fv(materialDiffColorHandle_task, taskMaterialColor[i+nb_triangles]);
+                    gl_task.uniform3fv(lightColorHandle_task,  directionalLightColor);
+                    gl_task.uniform3fv(lightDirectionHandle_task,  directionalLight);
+
+                    gl_task.bindVertexArray(vao_task);
+                    gl_task.drawElements(gl_task.TRIANGLES,nb_indices_parall, gl.UNSIGNED_SHORT, (nb_indices_triangle*nb_triangles+i*nb_indices_parall)*2);
+                } 
+  }  
+    
   var perspectiveMatrix = utils.MakePerspective(90, gl.canvas.width/gl.canvas.height, 0.1, 100.0);
-  var viewMatrix = utils.MakeView(3.0, 3.0, 2.5, -45.0, -40.0);
+  var viewMatrix = utils.MakeView(5.0, 3.0, 2.5, -45.0, -40.0);
+
+  var perspectiveMatrix_task = utils.MakePerspective(90, gl_task.canvas.width/gl_task.canvas.height, 0.1, 100.0);
+  var viewMatrix_task= utils.MakeView(5.0, 5.0, 2.5, -45.0, -40.0);
+
     
   //Bind vertices, normals and indexes to gl
   var vao = gl.createVertexArray();
-
+  var vao_task = gl_task.createVertexArray();
 
     
   //Draw everything
@@ -553,6 +667,7 @@ function main() {
 
     //Update perspective matrix (in case canvas size has changed)
     perspectiveMatrix = utils.MakePerspective(90, canvas.width / canvas.height, 0.1, 100.0)
+    perspectiveMatrix_task = utils.MakePerspective(90, canvas_task.width / canvas_task.height, 0.1, 100.0)  
 
     // update WV matrix
     var rotationX = utils.MakeRotateXMatrix(elevation);
@@ -560,43 +675,15 @@ function main() {
     var cameraMatrix= utils.multiplyMatrices(rotationX,rotationY);
     cameraMatrix = utils.multiplyMatrices(cameraMatrix,utils.MakeTranslateMatrix(0, 0, lookRadius));
     viewMatrix = utils.invertMatrix(cameraMatrix);
-
-   /* //For each piece
-  var nb_indices_triangle=24;
-  for (var i=0;i< nb_triangles;i++){
-    var worldViewMatrix = utils.multiplyMatrices(viewMatrix, cubeWorldMatrix[i]);
-    var projectionMatrix = utils.multiplyMatrices(perspectiveMatrix, worldViewMatrix);
-    gl.uniformMatrix4fv(matrixLocation, gl.FALSE, utils.transposeMatrix(projectionMatrix));
-
-    var cubeNormalMatrix = utils.invertMatrix(utils.transposeMatrix(worldViewMatrix));
-    gl.uniformMatrix4fv(normalMatrixPositionHandle, gl.FALSE, utils.transposeMatrix(cubeNormalMatrix));
-
-    gl.uniform3fv(materialDiffColorHandle, cubeMaterialColor[i]);
-    gl.uniform3fv(lightColorHandle,  directionalLightColor);
-    gl.uniform3fv(lightDirectionHandle,  directionalLight);
-
-    gl.bindVertexArray(vao);
-    gl.drawElements(gl.TRIANGLES,nb_indices_triangle, gl.UNSIGNED_SHORT, i*2*nb_indices_triangle);
-  }
-  
-  var nb_indices_parall=36;
-  for (var i=0; i < nb_parallepipedes;i++){
-    
-    var worldViewMatrix = utils.multiplyMatrices(viewMatrix, cubeWorldMatrix[i+nb_triangles]);
-    var projectionMatrix = utils.multiplyMatrices(perspectiveMatrix, worldViewMatrix);
-    gl.uniformMatrix4fv(matrixLocation, gl.FALSE, utils.transposeMatrix(projectionMatrix));
-
-    var cubeNormalMatrix = utils.invertMatrix(utils.transposeMatrix(worldViewMatrix));
-     gl.uniformMatrix4fv(normalMatrixPositionHandle, gl.FALSE, utils.transposeMatrix(cubeNormalMatrix));
-
-    gl.uniform3fv(materialDiffColorHandle, cubeMaterialColor[i+nb_triangles]);
-    gl.uniform3fv(lightColorHandle,  directionalLightColor);
-    gl.uniform3fv(lightDirectionHandle,  directionalLight);
-
-    gl.bindVertexArray(vao);
-    gl.drawElements(gl.TRIANGLES,nb_indices_parall, gl.UNSIGNED_SHORT, (nb_indices_triangle*nb_triangles+i*nb_indices_parall)*2);
-  }*/
       
+    var rotationX_task = utils.MakeRotateXMatrix(elevation_task);
+    var rotationY_task = utils.MakeRotateYMatrix(angle_task);
+    var cameraMatrix_task= utils.multiplyMatrices(rotationX_task,rotationY_task);
+    cameraMatrix_task = utils.multiplyMatrices(cameraMatrix_task,utils.MakeTranslateMatrix(0, 0, lookRadius_task));
+    viewMatrix_task = utils.invertMatrix(cameraMatrix_task);  
+    
+      
+
        drawObjects(true)
       
        // ------ Figure out what pixel is under the mouse and read it
@@ -617,7 +704,10 @@ function main() {
    // ------ Draw the objects to the canvas
       gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
       drawObjects(false)
-   
+  
+      gl_task.clear(gl_task.COLOR_BUFFER_BIT | gl_task.DEPTH_BUFFER_BIT);
+      drawTask()
+
     window.requestAnimationFrame(drawScene);
 
   }
