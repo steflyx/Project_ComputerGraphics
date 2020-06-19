@@ -506,7 +506,7 @@ var solutions=[
             //small triangle 1
             [0.0, -5*square_size/8, -square_size/3 + 0.2, 0.0, -45.0, 0.0, 1.0],
             //medium triangle 1
-            [0.0, square_size - 0.35,-Math.sqrt(2)*square_size/4 - 0.8, 0.0, 180.0, 0.0, 1.0],
+            [0.0, square_size - 0.2,-Math.sqrt(2)*square_size/4 - 0.8, 0.0, 180.0, 0.0, 1.0],
             //small triangle 2
             [0.0, square_size/3,-Math.sqrt(2)*square_size/2 - 0.8, 0.0, 180.0, 0.0, 1.0],
             //square
@@ -524,7 +524,7 @@ var solutions=[
             //small triangle 1
             [0.0, -5*square_size/8, -square_size/3 + 0.2, 0.0, -45.0, 0.0, 1.0],
             //medium triangle 1
-            [0.0, square_size - 0.35,-Math.sqrt(2)*square_size/4 - 0.8, 0.0, 180.0, 0.0, 1.0],
+            [0.0, square_size - 0.2,-Math.sqrt(2)*square_size/4 - 0.8, 0.0, 180.0, 0.0, 1.0],
             //small triangle 2
             [0.0, square_size/3,-Math.sqrt(2)*square_size/2 - 0.8, 0.0, 180.0, 0.0, 1.0],
             //square
@@ -542,7 +542,7 @@ var solutions=[
             //small triangle 1
             [0.0, square_size/3,-Math.sqrt(2)*square_size/2 - 0.8, 0.0, 180.0, 0.0, 1.0],
             //medium triangle 1
-            [0.0, square_size - 0.35,-Math.sqrt(2)*square_size/4 - 0.8, 0.0, 180.0, 0.0, 1.0],
+            [0.0, square_size - 0.2,-Math.sqrt(2)*square_size/4 - 0.8, 0.0, 180.0, 0.0, 1.0],
             //small triangle 2
             [0.0, -5*square_size/8, -square_size/3 + 0.2, 0.0, -45.0, 0.0, 1.0],
             //square
@@ -560,7 +560,7 @@ var solutions=[
             //small triangle 1
             [0.0, square_size/3,-Math.sqrt(2)*square_size/2 - 0.8, 0.0, 180.0, 0.0, 1.0],
             //medium triangle 1
-            [0.0, square_size - 0.35,-Math.sqrt(2)*square_size/4 - 0.8, 0.0, 180.0, 0.0, 1.0],
+            [0.0, square_size - 0.2,-Math.sqrt(2)*square_size/4 - 0.8, 0.0, 180.0, 0.0, 1.0],
             //small triangle 2
             [0.0, -5*square_size/8, -square_size/3 + 0.2, 0.0, -45.0, 0.0, 1.0],
             //square
