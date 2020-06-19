@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en-US">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>03 - Lights</title>
+    <style type="text/css">
+      body {
+        margin: 0;
+        background-color: gray;
+      }
+      canvas {
+        display: block;
+        background-color: white;
+      }
+      #my-canvas {
+        margin: 0;
+        padding: 0;
+        position: relative;
+        background: linear-gradient(-135deg, #42c2f5, #000);
+        z-index: 1;
+        width: 100%;
+        overflow: hidden;
+      }
+        #my-canvas_task {
+        margin: 2%;
+        position: relative;
+        background: linear-gradient(-135deg, #D9E3F0, #81E7B4);
+        z-index: 1;
+        width: 96%;
+        overflow: hidden;
+      }
+      #div-center{
+        height: 75vh;
+        width: 100vw;
+      }
+      #div-canvas{
+        width:75vw;
+        float: left;
+      }
+      #div-task{
+        width: 100%;   
+      }
+     #div-task-container{
+        width: 24.9vw;
+        height: 75vh;
+        float: right;
+        background-color:  #a8c5d9;   
+      }
+     #div-task-container p{
+        text-align: center;
+      }
+    #div-task-container h2{
+        text-align: center;
+      }
+      #div-gui{
+        width: 96%;
+        float: none;
+        padding-left: 2%;
+        padding-right: 2%;
+        border-top: solid 0.1vh black;
+      }
+      .div-commands{
+        width: 14%;
+        height: 24.8vh;
+        margin: 0;
+        float: left;
+        border-left: solid 1px black; 
+        overflow: hidden;
+      }
+      .div-commands p{
+        text-align: center;
+      }
+      #div-commands-first{
+        border-left: none;
+      }
+      .img-commands{
+        height: 10vh;
+        margin: auto;
+        display: block;
+        width: 60%;
+      }
+      .img-commands-double{
+        height: 10vh;
+        float: left;
+        margin: auto;
+        width: 48%;
+      }
+      .div-img-double{
+        width: 100%;
+        padding-left: 2%;
+      }
+
+      
+  @import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@900&display=swap");
+
+        :root {
+        --angle: 4deg;
+      }
+
+      .word-container {
+        position: fixed;
+        left: 0%;
+        top: 0%;
+        width: 75%;
+        min-height: 75%;
+        outline: 1px solid red;
+        z-index: -1;
+      }
+
+      .word {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        font-family: "Montserrat";
+        font-size: 8rem;
+        font-weight: 900;
+        color: var(--color, #fff);
+        display: flex;
+        pointer-events: none;
+        user-select: none;
+        line-height: 5.8rem;
+
+      }
+
+      .char {
+        position: relative;
+        -webkit-text-stroke: 2px #000;
+        transform: translateY(-45%) rotate(var(--angle));
+        animation: up-and-down 2s ease infinite;
+        animation-delay: calc((var(--word-index) * -0.15s) + (var(--char-index) * 0.1s));
+        z-index: calc(-1 * var(--char-index));
+        margin-left: -1.6rem;
+      }
+
+      @keyframes up-and-down {
+        0%,
+        100% {
+          transform: translateY(-45%) rotate(var(--angle));
+        }
+        50% {
+          transform: translateY(45%) rotate(var(--angle));
+        }
+      }
+
+    .alert {
+      padding: 20px;
+      background-color: #f44336;
+      color: white;
+      position: absolute;
+      top: 0;
+      left:32%;
+      width:10%;
+      z-index: -1;
+    }
+
+    .closebtn {
+      margin-left: 15px;
+      color: white;
+      font-weight: bold;
+      float: right;
+      font-size: 22px;
+      line-height: 20px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .closebtn:hover {
+      color: black;
+    }
+    
+
+    </style>
+
+</head>
+
+
+<body style="background-color:  #A8C5D9">
+  <div id="div-center">
+    <div id="div-canvas">
+      <canvas id="my-canvas"></canvas>
+    </div>
+      
+    <div id="div-task-container">
+        <h2>Reproduce this figure !</h2>
+        <div id="div-task">
+            <canvas id="my-canvas_task"></canvas>
+        </div>
+        <p>Press <b>shift</b> and use the<b> mouse </b> to rotate the figure</p>
+    </div>
+  </div>
+    
+  <div id="div-gui">
+    <div class="div-commands" id="div-commands-first">
+      <p><b>Click</b> on an object to select it!</p>
+      <img class="img-commands" src="Images/click.gif">
+    </div>
+    <div class="div-commands">
+      <p>Use <b>A</b> and <b>D</b> to rotate!</p>
+      <div class="div-img-double">
+        <img class="img-commands-double" src="Images/A.gif">
+        <img class="img-commands-double" src="Images/D.gif">
+      </div>
+     
+    </div>
+    <div class="div-commands">
+      <p>Use <b>R</b> and <b>S</b> to perform symmetries!</p>
+      <div class="div-img-double">
+        <img class="img-commands-double" src="Images/R.gif">
+        <img class="img-commands-double" src="Images/S.gif">
+      </div>
+    </div>
+    <div class="div-commands">
+      <p>Use <b>Spacebar</b> to change task!</p>
+      <img class="img-commands" src="Images/Spacebar.gif">
+    </div>
+    <div class="div-commands">
+      <p>Use <b>Up</b>,<b>Right</b>,<b>Down</b> and <b>Left</b> to move!</p>
+      <img class="img-commands" src="Images/Arrow.gif">
+    </div>
+    <div class="div-commands">
+      <p>Use <b>Enter</b> to check your answer!</p>
+      <img class="img-commands" src="Images/Enter.gif">
+    </div>
+      <div class="div-commands">
+      <p>Use <b>Del</b> if you can't solve it!</p>
+      <img class="img-commands" src="Images/del.gif">
+    </div>
+  </div>
+  <script type="text/javascript" src="utils.js"></script>
+  <script type="text/javascript" src="cubeDefinition.js"></script>
+  <script type="text/javascript" src="checkingValidity.js"></script>
+  <script type="text/javascript" src="solutionsDefinition.js"></script>
+  <script type="text/javascript" src="drawing.js"></script>
+
+
+  </div>
+    
+  
+  <span class="word-container" data-word="YOUWIN!" data-word-repeat="4"
+    data-text-colors="#FCA400,#0046DB,#FD0000,#FEFCFE"></span>
+
+  <div class="alert">
+  <span class="closebtn" onclick="this.parentElement.style.zIndex='-1';">&times;</span> 
+  <strong>Wrong!</strong> Try again!
+</div>
+
+  
+<script type="text/javascript">
+  console.clear();
+
+  const wordContainerEl = document.querySelector("[data-word]");
+  const word = wordContainerEl.getAttribute("data-word");
+  const wordRepeatTimes = wordContainerEl.getAttribute("data-word-repeat");
+  const textColorsArray = wordContainerEl.getAttribute("data-text-colors").split(",");
+
+  for (let i = 0; i < wordRepeatTimes; i++) {
+    const wordEl = document.createElement("span");
+    wordEl.className = "word";
+    wordEl.style.setProperty("--word-index", i);
+    wordEl.style.setProperty("--color", textColorsArray[i]);
+    for (let j = 0; j < word.length; j++) {
+      const charEl = document.createElement("span");
+      charEl.className = "char";
+      charEl.style.setProperty("--char-index", j);
+      charEl.innerHTML = word[j];
+      wordEl.appendChild(charEl);
+    }
+    wordContainerEl.appendChild(wordEl);
+  }
+
+</script>
+
+
+</body>
+
+
+</html>
