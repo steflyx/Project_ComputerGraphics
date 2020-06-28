@@ -70,7 +70,7 @@ function isTriangleWellRotated(userMatrice, solutionMatrice,rotation_tolerance){
 
 function isSquareWellRotated(userMatrice, solutionMatrice,rotation_tolerance){
     var valid_rotation =false;
-	if (equalAngleWithTolerance(rotation_tolerance,utils.mod(userMatrice[4],90),utils.mod(solutionMatrice[4],90))){
+    if (equalAngleWithTolerance(rotation_tolerance,utils.mod(userMatrice[4],90),utils.mod(solutionMatrice[4],90)) || equalAngleWithTolerance(rotation_tolerance,utils.mod(userMatrice[4],180),utils.mod(solutionMatrice[4],180))){
         valid_rotation=true;
     } 
     console.log("isSquareWellRotated : "+valid_rotation )
