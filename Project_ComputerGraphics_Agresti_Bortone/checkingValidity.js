@@ -70,7 +70,7 @@ function isTriangleWellRotated(userMatrice, solutionMatrice,rotation_tolerance){
 
 function isSquareWellRotated(userMatrice, solutionMatrice,rotation_tolerance){
     var valid_rotation =false;
-    if (equalAngleWithTolerance(rotation_tolerance,userMatrice[4],solutionMatrice[4])){
+	if (equalAngleWithTolerance(rotation_tolerance,utils.mod(userMatrice[4],90),utils.mod(solutionMatrice[4],90))){
         valid_rotation=true;
     } 
     console.log("isSquareWellRotated : "+valid_rotation )
@@ -94,10 +94,6 @@ function isParallepipedWellRotated(userMatrice, solutionMatrice,rotation_toleran
 }
 
 function isPieceWellPositioned(userMatrice, solutionMatrice,distance_tolerance ){
-   // console.log(((userMatrice[0]-solutionMatrice[0])**2));
-  //  console.log(((userMatrice[1]-solutionMatrice[1])**2));
-  //  console.log(((userMatrice[2]-solutionMatrice[2])**2));
-
    var distance = Math.sqrt(((userMatrice[0]-solutionMatrice[0])**2) + ((userMatrice[1]-solutionMatrice[1])**2) + ((userMatrice[2]-solutionMatrice[2])**2))
     console.log("isPieceWellPositioned distance : "+ distance )
    return(distance <= distance_tolerance);
@@ -107,10 +103,6 @@ function equalAngleWithTolerance(tolerance,user_angle,solution_angle){
     res=false;
     user_angle=utils.mod(user_angle,360);
     solution_angle=utils.mod(solution_angle,360);
-    
-  //  console.log("user_angle = "+user_angle)
-//    console.log("solution_angle = "+solution_angle)
-    
     if(solution_angle-tolerance>=0 && solution_angle+tolerance<=360  ){
         console.log("equalAngleWithTolerance first if")
         return((user_angle >= solution_angle-tolerance ) && (user_angle <= solution_angle+tolerance ) );
@@ -119,8 +111,6 @@ function equalAngleWithTolerance(tolerance,user_angle,solution_angle){
         console.log("equalAngleWithTolerance second if")
         var angle_1= utils.mod(solution_angle-tolerance,360);
         var angle_2= utils.mod(solution_angle+tolerance,360);
-       // console.log("angle_1 = "+angle_1)
-        //console.log("angle_2 = "+angle_2)
         return( (user_angle >= Math.max(angle_1,angle_2)) || (user_angle <= Math.min(angle_1,angle_2)) )     
     }
 }
