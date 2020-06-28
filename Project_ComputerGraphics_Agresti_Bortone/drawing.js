@@ -1,11 +1,7 @@
 //Parameters for Camera
-var cx = 3.0;
-var cy = 3.0;
-var cz = 2.5;
 var elevation = 0.0;
 var angle = 90.0;
 var lookRadius = 10.0;
-
 
 //Parameter for Camera for the task 
 var angle_task = 90.0;
@@ -329,9 +325,10 @@ function main() {
   var taskWorldMatrix = new Array(); //Define world matrice for each piece of the tangram
   var taskMaterialColor = new Array(); //Define material color for each piece
     
-
+  
     for (var i=0; i< nb_objects; i++){
-        cubeWorldMatrix[i] = utils.MakeWorld( worldMatrixParams(i)[0],worldMatrixParams(i)[1],worldMatrixParams(i)[2],worldMatrixParams(i)[3],worldMatrixParams(i)[4],worldMatrixParams(i)[5],worldMatrixParams(i)[6]);
+		positionArray= worldMatrixParams(i);
+        cubeWorldMatrix[i] = utils.MakeWorld(positionArray[0],positionArray[1],positionArray[2],positionArray[3],positionArray[4],positionArray[5],positionArray[6]);
         cubeMaterialColor[i]= pieceColors[i];
         piecesIdentifiers[i]=[
             ((i+1 & 0x000000FF) >>  0)/255.0,
@@ -345,15 +342,17 @@ function main() {
   //Positions for animations purposes
    positions = new Array();
   for (var i=0; i<nb_objects;i++){
-    positions[i] = [worldMatrixParams(i)[0],worldMatrixParams(i)[1],worldMatrixParams(i)[2],worldMatrixParams(i)[4]];
+    positionArray= worldMatrixParams(i);
+    positions[i] = [positionArray[0],positionArray[1],positionArray[2],positionArray[4]];
   }
 
   //Symmetry around x and y
    Rx = new Array();
    Ry = new Array();
-  for (var i=0; i<nb_objects;i++){
-    Rx[i] = [worldMatrixParams(i)[3]];
-    Ry[i] = [worldMatrixParams(i)[5]];
+   for (var i=0; i<nb_objects;i++){
+    positionArray= worldMatrixParams(i);
+    Rx[i] = [positionArray[3]];
+    Ry[i] = [positionArray[5]];
   }
 
 
@@ -382,8 +381,8 @@ function main() {
   canvas.addEventListener("mousemove", doMouseMove, false);
   window.addEventListener("mousemove", doMouseMoveTask, false);
   window.addEventListener("mousewheel", doMouseWheel, false);
-  canvas.width  = canvas_container.innerWidth-16;
-  canvas.height = canvas_container.innerHeight-180;
+  canvas.width  = canvas_container.innerWidth;
+  canvas.height = canvas_container.innerHeight;
   window.onresize = doResize;  
 
   
@@ -441,7 +440,7 @@ function main() {
   var normalMatrixPositionHandle_task = gl_task.getUniformLocation(program_task, 'nMatrix');  
   //  ***************************************************************
   
-  //gl.useProgram(program);
+
    
     /*This function draw the objects with a unifomr color if pick=true and with the nice colors otherwise*/
    function drawObjects(pick) {
@@ -610,10 +609,8 @@ function main() {
                 } 
   }  
     
-  var perspectiveMatrix = utils.MakePerspective(90, gl.canvas.width/gl.canvas.height, 0.1, 100.0);
+  
   var viewMatrix = utils.MakeView(5.0, 3.0, 2.5, -45.0, -40.0);
-
-  var perspectiveMatrix_task = utils.MakePerspective(90, gl_task.canvas.width/gl_task.canvas.height, 0.1, 100.0);
   var viewMatrix_task= utils.MakeView(5.0, 5.0, 2.5, -45.0, -40.0);
 
     
@@ -700,12 +697,13 @@ function main() {
       console.log(change_Task)
     if (change_Task){
         for (var i = 0; i < nb_objects; i++) {      
-            cubeWorldMatrix[i] =utils.MakeWorld( worldMatrixParams(i)[0],worldMatrixParams(i)[1],worldMatrixParams(i)[2],worldMatrixParams(i)[3],worldMatrixParams(i)[4],worldMatrixParams(i)[5],worldMatrixParams(i)[6]);
+			positionArray=worldMatrixParams(i)
+            cubeWorldMatrix[i] =utils.MakeWorld( positionArray[0],positionArray[1],positionArray[2],positionArray[3],positionArray[4],positionArray[5],positionArray[6]);
             
-             positions[i] = [worldMatrixParams(i)[0],worldMatrixParams(i)[1],worldMatrixParams(i)[2],worldMatrixParams(i)[4]];
+            positions[i] = [positionArray[0],positionArray[1],positionArray[2],positionArray[4]];
             
-             Rx[i] = [worldMatrixParams(i)[3]];
-            Ry[i] = [worldMatrixParams(i)[5]];
+            Rx[i] = [positionArray[3]];
+            Ry[i] = [positionArray[5]];
         };
         change_Task = false;       
     }
@@ -721,7 +719,6 @@ function main() {
     animate();
 
     //Clear the scene
-  //gl.clearColor(0.85, 0.85, 0.85, 1.0);
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
     //Update perspective matrix (in case canvas size has changed)
